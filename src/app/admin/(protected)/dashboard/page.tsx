@@ -1,49 +1,77 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Gem, FolderTree, Award, MessageCircle } from 'lucide-react';
-import { connectDB } from '@/lib/db';
-import { Product } from '@/lib/models/Product';
-import { Category } from '@/lib/models/Category';
-import { Certificate } from '@/lib/models/Certificate';
-import { getSiteSettings } from '@/lib/site-data';
-import { requireAdmin } from '@/lib/admin-auth';
+import { useSession, signIn } from 'next-auth/react';
 import StatCard from '@/components/admin/StatCard';
 
-export const dynamic = 'force-dynamic';
+export default function AdminDashboard() {
+  const { data: session, status } = useSession();
+  const [productCount, setProductCount] = useState(0);
+  const [categoryCount, setCategoryCount] = useState(0);
+  const [certificateCount, setCertificateCount] = useState(0);
+  const [whatsappNumber, setWhatsappNumber] = useState('Not set');
+  const [loading, setLoading] = useState(true);
+  const [dbError, setDbError] = useState('');
 
-export default async function AdminDashboard() {
-  // Auth check first
-  await requireAdmin();
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      signIn();
+    }
+  }, [status]);
 
-  let productCount = 0;
-  let categoryCount = 0;
-  let certificateCount = 0;
-  let activeProducts = 0;
-  let heroProducts = 0;
-  let settings: Record<string, any> = {};
-  let dbError = '';
+  // Fetch dashboard data
+  useEffect(() => {
+    if (status !== 'authenticated') return;
 
-  try {
-    await connectDB();
+    async function fetchData() {
+      try {
+        const [prodRes, catRes, certRes, settingsRes] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/categories'),
+          fetch('/api/certificates'),
+          fetch('/api/settings'),
+        ]);
 
-    const [pCount, cCount, certCount, siteSettings] = await Promise.all([
-      Product.countDocuments().catch(() => 0),
-      Category.countDocuments().catch(() => 0),
-      Certificate.countDocuments().catch(() => 0),
-      getSiteSettings().catch(() => ({})),
-    ]);
+        const products = await prodRes.json();
+        const categories = await catRes.json();
+        const certificates = await certRes.json();
+        const settings = await settingsRes.json();
 
-    productCount = pCount;
-    categoryCount = cCount;
-    certificateCount = certCount;
-    settings = siteSettings as Record<string, any>;
+        setProductCount(Array.isArray(products) ? products.length : 0);
+        setCategoryCount(Array.isArray(categories) ? categories.length : 0);
+        setCertificateCount(Array.isArray(certificates) ? certificates.length : 0);
+        setWhatsappNumber(settings?.whatsappNumber || 'Not set');
+      } catch {
+        setDbError('Could not connect to database. Check your MongoDB connection string.');
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    activeProducts = await Product.countDocuments({ isActive: true }).catch(() => 0);
-    heroProducts = await Product.countDocuments({ isHero: true }).catch(() => 0);
-  } catch {
-    dbError = 'Could not connect to database. Check your MongoDB connection string.';
+    fetchData();
+  }, [status]);
+
+  if (status === 'loading' || loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-luxury-silver/40 text-sm tracking-[0.2em] uppercase">Loading...</div>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    return (
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <div className="text-luxury-white/40 text-sm">Redirecting to login...</div>
+      </div>
+    );
   }
 
   return (
     <div>
+      {/* Header */}
       <div className="mb-10">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 border border-luxury-silver/30 flex items-center justify-center">
@@ -63,12 +91,13 @@ export default async function AdminDashboard() {
         </div>
       )}
 
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
         <StatCard
           icon={Gem}
           label="Total Products"
           value={productCount}
-          description={`${activeProducts} active • ${heroProducts} featured in hero`}
+          description={`${productCount} products in catalog`}
         />
         <StatCard
           icon={FolderTree}
@@ -85,7 +114,7 @@ export default async function AdminDashboard() {
         <StatCard
           icon={MessageCircle}
           label="WhatsApp Number"
-          value={(settings as any).whatsappNumber || 'Not set'}
+          value={whatsappNumber}
           description="Inquiry message is configurable"
         />
       </div>
