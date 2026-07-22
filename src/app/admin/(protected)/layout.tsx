@@ -5,7 +5,15 @@ import { authOptions } from '@/lib/auth';
 import AdminSidebar from '@/components/admin/Sidebar';
 
 export default async function AdminProtectedLayout({ children }: { children: ReactNode }) {
-  const session = await getServerSession(authOptions);
+  // Session check — must NOT be wrapped in try-catch because
+  // next/navigation's redirect() throws an internal NEXT_REDIRECT
+  // error that Next.js catches at the framework level.
+  let session;
+  try {
+    session = await getServerSession(authOptions);
+  } catch {
+    session = null;
+  }
 
   if (!session) {
     redirect('/admin/login');
