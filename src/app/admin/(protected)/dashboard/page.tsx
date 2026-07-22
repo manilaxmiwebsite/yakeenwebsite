@@ -4,11 +4,14 @@ import { Product } from '@/lib/models/Product';
 import { Category } from '@/lib/models/Category';
 import { Certificate } from '@/lib/models/Certificate';
 import { getSiteSettings } from '@/lib/site-data';
+import { requireAdmin } from '@/lib/admin-auth';
 import StatCard from '@/components/admin/StatCard';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
+  // Auth check — redirects to login if not authenticated
+  await requireAdmin();
   let productCount = 0;
   let categoryCount = 0;
   let certificateCount = 0;
