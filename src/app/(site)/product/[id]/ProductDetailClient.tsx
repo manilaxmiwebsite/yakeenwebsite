@@ -29,7 +29,7 @@ export default function ProductDetailClient({ product, settings }: ProductDetail
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10 lg:gap-16">
       {/* Image Gallery */}
       <div>
         {/* Main Image */}
@@ -107,7 +107,7 @@ export default function ProductDetailClient({ product, settings }: ProductDetail
         )}
 
         {/* Name */}
-        <h1 className="font-display text-3xl md:text-4xl lg:text-5xl text-luxury-white font-medium mb-6">
+        <h1 className="font-display text-2xl md:text-4xl lg:text-5xl text-luxury-white font-medium mb-6">
           {product.name}
         </h1>
 
@@ -153,8 +153,8 @@ export default function ProductDetailClient({ product, settings }: ProductDetail
         <button
           onClick={handleWhatsApp}
           className="group inline-flex items-center justify-center gap-3 w-full 
-                   bg-[#25D366] text-white px-8 py-4
-                   text-sm tracking-[0.15em] uppercase font-medium
+                   bg-[#25D366] text-white px-6 md:px-8 py-3.5 md:py-4
+                   text-xs md:text-sm tracking-[0.15em] uppercase font-medium
                    hover:bg-[#22c35e] transition-all duration-500
                    shadow-lg shadow-[#25D366]/20"
         >

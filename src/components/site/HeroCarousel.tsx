@@ -135,7 +135,7 @@ export default function HeroCarousel({
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-              className="font-display text-4xl md:text-6xl lg:text-7xl text-luxury-white font-medium leading-tight mb-6"
+              className="font-display text-3xl sm:text-4xl md:text-6xl lg:text-7xl text-luxury-white font-medium leading-tight mb-4 md:mb-6"
             >
               {currentProduct.name}
             </motion.h1>
@@ -147,7 +147,7 @@ export default function HeroCarousel({
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-                className="text-lg md:text-xl text-luxury-white/60 font-body font-light max-w-xl mb-10 leading-relaxed"
+                className="text-sm sm:text-lg md:text-xl text-luxury-white/60 font-body font-light max-w-xl mb-6 md:mb-10 leading-relaxed"
               >
                 {currentProduct.caption}
               </motion.p>
@@ -161,9 +161,9 @@ export default function HeroCarousel({
             >
               <button
                 onClick={() => handleWhatsApp(currentProduct.name)}
-                className="group inline-flex items-center gap-3 px-8 py-4 
+                className="group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 
                          bg-luxury-white/10 backdrop-blur-md border border-luxury-white/20
-                         text-luxury-white text-sm tracking-[0.15em] uppercase font-medium
+                         text-luxury-white text-xs md:text-sm tracking-[0.15em] uppercase font-medium
                          hover:bg-luxury-white hover:text-luxury-black 
                          transition-all duration-700"
               >
@@ -178,24 +178,23 @@ export default function HeroCarousel({
 
       {/* Navigation arrows */}
       {totalSlides > 1 && (
-        <>
-          <button
+        <>            <button
             onClick={goPrev}
-            className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 
+            className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 
                      border border-luxury-white/10 text-luxury-white/40
                      hover:bg-luxury-white/10 hover:text-luxury-white hover:border-luxury-white/20
                      transition-all duration-500 flex items-center justify-center"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} />
           </button>
           <button
             onClick={goNext}
-            className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 
+            className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 
                      border border-luxury-white/10 text-luxury-white/40
                      hover:bg-luxury-white/10 hover:text-luxury-white hover:border-luxury-white/20
                      transition-all duration-500 flex items-center justify-center"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={18} />
           </button>
         </>
       )}
@@ -218,7 +217,7 @@ export default function HeroCarousel({
       </div>
 
       {/* Counter */}
-      <div className="absolute bottom-10 right-8 md:right-12 text-xs tracking-[0.2em] text-luxury-white/30 font-medium">
+      <div className="absolute bottom-10 right-4 md:right-12 text-xs tracking-[0.2em] text-luxury-white/30 font-medium">
         {String(currentIndex + 1).padStart(2, '0')}
         <span className="mx-2">/</span>
         {String(totalSlides).padStart(2, '0')}

@@ -30,6 +30,7 @@ export default function InstagramSection({
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const touchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const posts = instagramImages.length > 0 ? instagramImages : placeholderPosts;
 
@@ -108,9 +109,13 @@ export default function InstagramSection({
         viewport={{ once: true, margin: '-100px' }}
         transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
         ref={scrollRef}
-        className={`flex gap-4 overflow-x-hidden px-6 md:px-12 lg:px-16 group`}
+        className={`flex gap-4 overflow-x-auto px-6 md:px-12 lg:px-16 group`}
         onMouseEnter={() => setIsAutoScrolling(false)}
         onMouseLeave={() => setIsAutoScrolling(true)}
+        onTouchStart={() => setIsAutoScrolling(false)}                    onTouchEnd={() => {
+                      if (touchTimeoutRef.current) clearTimeout(touchTimeoutRef.current);
+                      touchTimeoutRef.current = setTimeout(() => setIsAutoScrolling(true), 3000);
+                    }}
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {[...posts, ...posts].map((post, index) => (

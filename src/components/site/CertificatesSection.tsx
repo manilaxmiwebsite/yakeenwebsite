@@ -73,7 +73,8 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
         className="relative"
       >
         <div
-          className={`flex gap-6 overflow-x-auto px-6 md:px-12 lg:px-16 pb-4 scrollbar-hide snap-x snap-mandatory`}
+          className={`flex gap-6 overflow-x-auto px-6 md:px-12 lg:px-16 pb-4 snap-x snap-mandatory scrollbar-hide`}
+          id="certificates-scroll"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {certificates.map((certificate, index) => (
@@ -115,11 +116,7 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
       />
 
       {/* Hide scrollbar */}
-      <style jsx>{`
-        div::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
+
     </section>
   );
 }

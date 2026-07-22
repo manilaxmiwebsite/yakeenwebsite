@@ -81,7 +81,7 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
             >
             <Link
               href={`/explore/${category.slug}`}
-              className={`group relative overflow-hidden aspect-[4/5] bg-luxury-charcoal block ${
+              className={`group relative overflow-hidden aspect-[3/4] md:aspect-[4/5] bg-luxury-charcoal block ${
                 index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
               } ${index === 3 ? 'lg:col-span-2' : ''}`}
             >
@@ -102,8 +102,8 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
                             transition-all duration-700 m-4" />
 
               {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                <h3 className="font-display text-2xl md:text-3xl text-luxury-white mb-2 
+              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
+                <h3 className="font-display text-xl md:text-3xl text-luxury-white mb-2 
                             transform transition-all duration-500 
                             group-hover:translate-x-2">
                   {category.name}
