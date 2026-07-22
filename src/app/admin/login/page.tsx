@@ -2,7 +2,6 @@
 
 import { useState, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 
 export default function AdminLoginPage() {
@@ -11,7 +10,6 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -19,21 +17,21 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
+      // Use full redirect (no redirect: false) for reliable mobile login
       const result = await signIn('credentials', {
         email,
         password,
-        redirect: false,
+        callbackUrl: '/admin/dashboard',
       });
 
+      // If signIn with redirect fails, show error
       if (result?.error) {
         setError('Invalid email or password');
         setLoading(false);
-      } else {
-        router.push('/admin/dashboard');
-        router.refresh();
       }
+      // On success, signIn handles the redirect automatically
     } catch {
-      setError('An error occurred. Please try again.');
+      setError('Connection error. Please try again.');
       setLoading(false);
     }
   };
