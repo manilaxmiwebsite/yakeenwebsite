@@ -42,6 +42,8 @@ export default function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [emailForm, setEmailForm] = useState({ currentEmail: '', newEmail: '', password: '' });
 
   const fetchSettings = useCallback(async () => {
     try {
@@ -432,9 +434,68 @@ export default function AdminSettingsPage() {
           </div>
         </section>
 
-        {/* Admin Password */}
+        {/* Admin Email */}
         <section className="bg-luxury-charcoal/40 border border-luxury-gunmetal/20 p-6 md:p-8">
-          <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 mb-6 font-medium">Security</h2>
+          <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 mb-6 font-medium">Admin Account</h2>
+          <button
+            type="button"
+            onClick={() => setShowEmailForm(!showEmailForm)}
+            className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-luxury-silver/60 hover:text-luxury-silver transition-colors"
+          >
+            <Eye size={14} />
+            <span>Change Admin Email</span>
+          </button>
+
+          {showEmailForm && (
+            <div className="mt-5 space-y-4 max-w-md">
+              <p className="text-xs text-luxury-white/30">You will be signed out after changing your email.</p>
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-white/40 mb-2">Current Email</label>
+                <input type="email" value={emailForm.currentEmail} onChange={(e) => setEmailForm({ ...emailForm, currentEmail: e.target.value })} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" autoComplete="email" />
+              </div>
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-white/40 mb-2">New Email</label>
+                <input type="email" value={emailForm.newEmail} onChange={(e) => setEmailForm({ ...emailForm, newEmail: e.target.value })} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" autoComplete="email" />
+              </div>
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-white/40 mb-2">Confirm Password</label>
+                <input type="password" value={emailForm.password} onChange={(e) => setEmailForm({ ...emailForm, password: e.target.value })} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" autoComplete="current-password" />
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  if (!emailForm.currentEmail || !emailForm.newEmail || !emailForm.password) {
+                    toast.error('All fields are required');
+                    return;
+                  }
+                  try {
+                    const res = await fetch('/api/admin/update-email', {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(emailForm),
+                    });
+                    const data = await res.json();
+                    if (!res.ok) {
+                      toast.error(data.error || 'Failed to update email');
+                      return;
+                    }
+                    toast.success('Email updated! Signing out...');
+                    setTimeout(() => {
+                      window.location.href = '/admin/login';
+                    }, 1500);
+                  } catch {
+                    toast.error('Failed to update email');
+                  }
+                }}
+                className="px-5 py-2.5 bg-luxury-white text-luxury-black text-xs tracking-[0.15em] uppercase font-medium hover:bg-luxury-silver transition-all duration-300"
+              >
+                Update Email
+              </button>
+            </div>
+          )}
+
+          <div className="h-[1px] bg-luxury-gunmetal/20 my-5" />
+
           <button
             type="button"
             onClick={() => setShowPasswordForm(!showPasswordForm)}
