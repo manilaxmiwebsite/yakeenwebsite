@@ -1,10 +1,6 @@
 import { ReactNode } from 'react';
 
-// Minimal admin layout - sidebar is disabled (causes crash, will fix later)
+// Root admin layout - renders children (protected routes add sidebar via their own layout)
 export default function AdminRootLayout({ children }: { children: ReactNode }) {
-  return (
-    <div className="min-h-screen bg-luxury-black p-6 md:p-8 lg:p-10">
-      {children}
-    </div>
-  );
+  return <>{children}</>;
 }

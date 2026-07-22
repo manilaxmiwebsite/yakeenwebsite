@@ -66,11 +66,11 @@ export default function Header({
                   <span className="text-luxury-silver text-lg font-display font-bold">M</span>
                 </div>
               )}
-              <div className="hidden sm:block">
-                <span className="font-display text-lg md:text-xl text-luxury-white tracking-[0.05em]">
+              <div className="block truncate max-w-[140px] sm:max-w-none">
+                <span className="font-display text-sm sm:text-lg md:text-xl text-luxury-white tracking-[0.05em] truncate block">
                   {brandName}
                 </span>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-luxury-silver/40 font-body -mt-0.5">
+                <div className="text-[10px] tracking-[0.2em] uppercase text-luxury-silver/40 font-body -mt-0.5 truncate">
                   Since 1965
                 </div>
               </div>

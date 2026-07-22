@@ -81,7 +81,7 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
             >
             <Link
               href={`/explore/${category.slug}`}
-              className={`group relative overflow-hidden aspect-[3/4] md:aspect-[4/5] bg-luxury-charcoal block ${
+              className={`group relative overflow-hidden aspect-[4/5] bg-luxury-charcoal block ${
                 index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
               } ${index === 3 ? 'lg:col-span-2' : ''}`}
             >
