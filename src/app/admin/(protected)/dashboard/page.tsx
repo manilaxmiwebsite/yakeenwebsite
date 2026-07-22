@@ -9,17 +9,34 @@ import StatCard from '@/components/admin/StatCard';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  await connectDB();
+  let productCount = 0;
+  let categoryCount = 0;
+  let certificateCount = 0;
+  let activeProducts = 0;
+  let heroProducts = 0;
+  let settings: Record<string, any> = {};
+  let dbError = '';
 
-  const [productCount, categoryCount, certificateCount, settings] = await Promise.all([
-    Product.countDocuments(),
-    Category.countDocuments(),
-    Certificate.countDocuments(),
-    getSiteSettings(),
-  ]);
+  try {
+    await connectDB();
 
-  const activeProducts = await Product.countDocuments({ isActive: true });
-  const heroProducts = await Product.countDocuments({ isHero: true });
+    const [pCount, cCount, certCount, siteSettings] = await Promise.all([
+      Product.countDocuments().catch(() => 0),
+      Category.countDocuments().catch(() => 0),
+      Certificate.countDocuments().catch(() => 0),
+      getSiteSettings().catch(() => ({})),
+    ]);
+
+    productCount = pCount;
+    categoryCount = cCount;
+    certificateCount = certCount;
+    settings = siteSettings as Record<string, any>;
+
+    activeProducts = await Product.countDocuments({ isActive: true }).catch(() => 0);
+    heroProducts = await Product.countDocuments({ isHero: true }).catch(() => 0);
+  } catch (e) {
+    dbError = 'Could not connect to database. Check your MongoDB connection string.';
+  }
 
   return (
     <div>
@@ -30,6 +47,12 @@ export default async function AdminDashboard() {
         </p>
         <div className="h-[1px] bg-gradient-to-r from-luxury-gunmetal/50 to-transparent mt-4" />
       </div>
+
+      {dbError && (
+        <div className="mb-6 p-4 border border-red-500/30 bg-red-500/10">
+          <p className="text-red-400 text-sm">{dbError}</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
         <StatCard
@@ -53,7 +76,7 @@ export default async function AdminDashboard() {
         <StatCard
           icon={MessageCircle}
           label="WhatsApp Number"
-          value={settings.whatsappNumber || 'Not set'}
+          value={(settings as any).whatsappNumber || 'Not set'}
           description="Inquiry message is configurable"
         />
       </div>
