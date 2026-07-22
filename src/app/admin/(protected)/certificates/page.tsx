@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, X } from 'lucide-react';
 import { ICertificate } from '@/types';
 import toast from 'react-hot-toast';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 export default function AdminCertificatesPage() {
   const [certificates, setCertificates] = useState<ICertificate[]>([]);
@@ -99,12 +100,14 @@ export default function AdminCertificatesPage() {
                 <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" required />
               </div>
               <div>
-                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Image URL *</label>
-                <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" placeholder="https://..." required />
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Certificate Image *</label>
+                <ImageUpload
+                  currentImage={form.image}
+                  onUpload={(url) => setForm({ ...form, image: url })}
+                  onRemove={() => setForm({ ...form, image: '' })}
+                  aspectRatio="aspect-[3/4]"
+                />
               </div>
-              {form.image && (
-                <img src={form.image} alt="Preview" className="w-full h-48 object-contain bg-luxury-black border border-luxury-gunmetal/30" />
-              )}
               <label className="flex items-center gap-2 text-sm text-luxury-white/60">
                 <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-luxury-silver" />
                 Active

@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent, useCallback } from 'react';
 import { Save, Eye, EyeOff, Plus, Trash2, MoveUp, MoveDown } from 'lucide-react';
 import toast from 'react-hot-toast';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface InstagramImageEntry {
   image: string;
@@ -214,8 +215,14 @@ export default function AdminSettingsPage() {
               <input value={settings.brandName} onChange={(e) => updateField('brandName', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Logo URL</label>
-              <input value={settings.logo} onChange={(e) => updateField('logo', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" placeholder="https://..." />
+              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Logo</label>
+              <ImageUpload
+                currentImage={settings.logo}
+                onUpload={(url) => updateField('logo', url)}
+                onRemove={() => updateField('logo', '')}
+                label="Logo"
+                aspectRatio="aspect-[1/1]"
+              />
             </div>
           </div>
         </section>
@@ -287,8 +294,14 @@ export default function AdminSettingsPage() {
               <textarea value={settings.aboutContent} onChange={(e) => updateField('aboutContent', e.target.value)} rows={6} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm resize-none" />
             </div>
             <div>
-              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">About Image URL</label>
-              <input value={settings.aboutImage} onChange={(e) => updateField('aboutImage', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" placeholder="https://..." />
+              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">About Image</label>
+              <ImageUpload
+                currentImage={settings.aboutImage}
+                onUpload={(url) => updateField('aboutImage', url)}
+                onRemove={() => updateField('aboutImage', '')}
+                label="About Image"
+                aspectRatio="aspect-[16/9]"
+              />
             </div>
           </div>
         </section>
@@ -350,22 +363,14 @@ export default function AdminSettingsPage() {
                 {settings.instagramImages.map((img, index) => (
                   <div key={index} className="border border-luxury-gunmetal/30 p-4 bg-luxury-black/30">
                     <div className="flex items-start gap-3">
-                      {/* Preview */}
-                      <div className="w-16 h-16 shrink-0 bg-luxury-charcoal border border-luxury-gunmetal/30 overflow-hidden">
-                        {img.image ? (
-                          <img src={img.image} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-luxury-white/10 text-xs">No img</div>
-                        )}
-                      </div>
-
                       {/* Fields */}
                       <div className="flex-1 space-y-2">
-                        <input
-                          value={img.image}
-                          onChange={(e) => updateInstagramImage(index, 'image', e.target.value)}
-                          placeholder="Image URL"
-                          className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-3 py-1.5 text-xs text-luxury-white focus:outline-none focus:border-luxury-silver/30"
+                        <ImageUpload
+                          currentImage={img.image}
+                          onUpload={(url) => updateInstagramImage(index, 'image', url)}
+                          onRemove={() => updateInstagramImage(index, 'image', '')}
+                          label={`Instagram Image ${index + 1}`}
+                          aspectRatio="aspect-[1/1]"
                         />
                         <input
                           value={img.caption}

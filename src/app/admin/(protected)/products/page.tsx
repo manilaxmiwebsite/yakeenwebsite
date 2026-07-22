@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit2, Trash2, Star, Search, X } from 'lucide-react';
 import { IProduct, ICategory } from '@/types';
 import toast from 'react-hot-toast';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -264,30 +265,24 @@ export default function AdminProductsPage() {
               </div>
 
               <div>
-                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Image URLs</label>
-                {form.images.map((img, i) => (
-                  <div key={i} className="flex gap-2 mb-2">
-                    <input
-                      value={img}
-                      onChange={(e) => {
-                        const newImages = [...form.images];
-                        newImages[i] = e.target.value;
-                        setForm({ ...form, images: newImages });
-                      }}
-                      className="flex-1 bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm"
-                      placeholder="Image URL"
-                    />
-                    {form.images.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => setForm({ ...form, images: form.images.filter((_, j) => j !== i) })}
-                        className="text-red-400/60 hover:text-red-400 px-2"
-                      >
-                        <X size={16} />
-                      </button>
-                    )}
-                  </div>
-                ))}
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Product Images</label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+                  {form.images.map((img, i) => (
+                    <div key={i} className="relative">
+                      <ImageUpload
+                        currentImage={img}
+                        onUpload={(url) => {
+                          const newImages = [...form.images];
+                          newImages[i] = url;
+                          setForm({ ...form, images: newImages });
+                        }}
+                        onRemove={form.images.length > 1 ? () => setForm({ ...form, images: form.images.filter((_, j) => j !== i) }) : undefined}
+                        label={`Image ${i + 1}`}
+                        aspectRatio="aspect-[1/1]"
+                      />
+                    </div>
+                  ))}
+                </div>
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, images: [...form.images, ''] })}

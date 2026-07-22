@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit2, Trash2, MoveUp, MoveDown, X } from 'lucide-react';
 import { ICategory } from '@/types';
 import toast from 'react-hot-toast';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -142,8 +143,13 @@ export default function AdminCategoriesPage() {
                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm resize-none" />
               </div>
               <div>
-                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Image URL</label>
-                <input value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" placeholder="https://..." />
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Category Image</label>
+                <ImageUpload
+                  currentImage={form.image}
+                  onUpload={(url) => setForm({ ...form, image: url })}
+                  onRemove={() => setForm({ ...form, image: '' })}
+                  aspectRatio="aspect-[4/3]"
+                />
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
