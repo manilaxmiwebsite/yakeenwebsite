@@ -182,6 +182,7 @@ async function seedData() {
   const defaultSettings = [
     { key: SETTING_KEYS.WHATSAPP_NUMBER, value: '919876543210' },
     { key: SETTING_KEYS.WHATSAPP_MESSAGE, value: 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.' },
+    { key: SETTING_KEYS.HERO_SPEED, value: '5000' },
     { key: SETTING_KEYS.BRAND_NAME, value: 'Manilakshmi Silver' },
     { key: SETTING_KEYS.ABOUT_TITLE, value: 'Our Legacy of Silver Craftsmanship' },
     { key: SETTING_KEYS.ABOUT_CONTENT, value: 'For generations, Manilakshmi Silver has been synonymous with unparalleled craftsmanship and timeless elegance. Each piece is meticulously handcrafted by master artisans who transform pure silver into wearable art. Our commitment to quality, purity, and design excellence has made us a trusted name in premium silver jewelry.\n\nEvery creation from our atelier carries forward a tradition of excellence, blending heritage techniques with contemporary aesthetics. We source only the finest silver, ensuring each piece meets the highest standards of purity and durability. Our artisans pour their soul into every detail, creating pieces that transcend trends and become cherished heirlooms.' },

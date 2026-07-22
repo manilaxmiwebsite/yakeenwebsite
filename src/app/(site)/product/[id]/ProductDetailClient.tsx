@@ -18,8 +18,11 @@ export default function ProductDetailClient({ product, settings }: ProductDetail
       : '';
 
   const handleWhatsApp = () => {
+    const productUrl = window.location.href;
     const msg = encodeURIComponent(
-      (settings.whatsappMessage || 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.').replace('{product}', product.name)
+      (settings.whatsappMessage || 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.')
+        .replace('{product}', product.name)
+        + `\n\nProduct Link: ${productUrl}`
     );
     window.open(
       `https://wa.me/${(settings.whatsappNumber || '919876543210').replace(/[^0-9]/g, '')}?text=${msg}`,

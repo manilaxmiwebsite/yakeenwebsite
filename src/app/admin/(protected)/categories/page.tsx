@@ -100,6 +100,13 @@ export default function AdminCategoriesPage() {
 
   return (
     <div>
+      {/* Back to Dashboard */}
+      <a href="/admin/dashboard" className="inline-flex items-center gap-2 text-xs tracking-[0.15em] uppercase 
+                text-luxury-silver/50 hover:text-luxury-silver transition-colors duration-300 mb-6 group">
+        <span className="group-hover:-translate-x-1 transition-transform duration-300">←</span>
+        <span>Back to Dashboard</span>
+      </a>
+
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-display text-luxury-white">Categories</h1>

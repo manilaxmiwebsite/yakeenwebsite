@@ -16,12 +16,14 @@ interface HeroCarouselProps {
   products: HeroProduct[];
   whatsappNumber?: string;
   whatsappMessage?: string;
+  heroSpeed?: number;
 }
 
 export default function HeroCarousel({
   products,
   whatsappNumber = '919876543210',
   whatsappMessage = 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.',
+  heroSpeed = 5000,
 }: HeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -53,7 +55,7 @@ export default function HeroCarousel({
     }
     intervalRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % totalSlides);
-    }, 5000);
+    }, heroSpeed);
   };
 
   useEffect(() => {
@@ -246,28 +248,21 @@ export default function HeroCarousel({
         </>
       )}
 
-      {/* Slide indicators */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3">
-        {products.map((_, index) => (
+      {/* Slide indicators - minimal dots only */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2">
+        {products.slice(0, Math.min(totalSlides, 10)).map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`transition-all duration-700 ${
+            className={`transition-all duration-700 rounded-full ${
               index === currentIndex
-                ? 'w-12 h-[2px] bg-luxury-silver'
-                : 'w-6 h-[2px] bg-luxury-white/20 hover:bg-luxury-white/40'
+                ? 'w-3 h-1.5 bg-luxury-silver'
+                : 'w-1.5 h-1.5 bg-luxury-white/20 hover:bg-luxury-white/40'
             }`}
           >
             <span className="sr-only">Slide {index + 1}</span>
           </button>
         ))}
-      </div>
-
-      {/* Counter */}
-      <div className="absolute bottom-10 right-4 md:right-12 text-xs tracking-[0.2em] text-luxury-white/30 font-medium">
-        {String(currentIndex + 1).padStart(2, '0')}
-        <span className="mx-2">/</span>
-        {String(totalSlides).padStart(2, '0')}
       </div>
     </section>
   );

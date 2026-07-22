@@ -5,6 +5,7 @@ import { IInstagramImage } from '@/types';
 export interface SiteSettings {
   whatsappNumber: string;
   whatsappMessage: string;
+  heroSpeed: string;
   aboutTitle: string;
   aboutContent: string;
   aboutImage: string;
@@ -30,6 +31,7 @@ export interface SiteSettings {
 const defaultSettings: SiteSettings = {
   whatsappNumber: '919876543210',
   whatsappMessage: 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.',
+  heroSpeed: '5000',
   aboutTitle: 'Our Legacy',
   aboutContent: 'For generations, Manilakshmi Silver has been synonymous with unparalleled craftsmanship and timeless elegance. Each piece is meticulously handcrafted by master artisans who transform pure silver into wearable art. Our commitment to quality, purity, and design excellence has made us a trusted name in premium silver jewelry.',
   aboutImage: '/placeholder-about.jpg',
@@ -55,6 +57,7 @@ const defaultSettings: SiteSettings = {
 export const SETTING_KEYS = {
   WHATSAPP_NUMBER: 'whatsappNumber',
   WHATSAPP_MESSAGE: 'whatsappMessage',
+  HERO_SPEED: 'heroSpeed',
   ABOUT_TITLE: 'aboutTitle',
   ABOUT_CONTENT: 'aboutContent',
   ABOUT_IMAGE: 'aboutImage',
@@ -87,6 +90,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return {
       whatsappNumber: settingMap[SETTING_KEYS.WHATSAPP_NUMBER] || defaultSettings.whatsappNumber,
       whatsappMessage: settingMap[SETTING_KEYS.WHATSAPP_MESSAGE] || defaultSettings.whatsappMessage,
+      heroSpeed: settingMap[SETTING_KEYS.HERO_SPEED] || defaultSettings.heroSpeed,
       aboutTitle: settingMap[SETTING_KEYS.ABOUT_TITLE] || defaultSettings.aboutTitle,
       aboutContent: settingMap[SETTING_KEYS.ABOUT_CONTENT] || defaultSettings.aboutContent,
       aboutImage: settingMap[SETTING_KEYS.ABOUT_IMAGE] || defaultSettings.aboutImage,

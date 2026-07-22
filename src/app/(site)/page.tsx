@@ -58,7 +58,7 @@ export default async function HomePage() {
     updatedAt: c.updatedAt?.toISOString() || '',
   }));
 
-  const { sections, aboutTitle, aboutContent, aboutImage, whatsappNumber, whatsappMessage, instagramUrl, instagramImages } = settings;
+  const { sections, aboutTitle, aboutContent, aboutImage, whatsappNumber, whatsappMessage, heroSpeed, instagramUrl, instagramImages } = settings;
 
   return (
     <>
@@ -67,6 +67,7 @@ export default async function HomePage() {
           products={heroProducts}
           whatsappNumber={whatsappNumber}
           whatsappMessage={whatsappMessage}
+          heroSpeed={parseInt(heroSpeed) || 5000}
         />
       )}
 
