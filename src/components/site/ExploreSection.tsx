@@ -8,9 +8,23 @@ import { ICategory } from '@/types';
 
 interface ExploreSectionProps {
   categories: ICategory[];
+  columns?: number;
+  cardSize?: string;
 }
 
-export default function ExploreSection({ categories }: ExploreSectionProps) {
+export default function ExploreSection({ categories, columns = 3, cardSize = '4-5' }: ExploreSectionProps) {
+  const aspectMap: Record<string, string> = {
+    '2-3': 'aspect-[2/3]',
+    '3-4': 'aspect-[3/4]',
+    '4-5': 'aspect-[4/5]',
+  };
+  const aspectClass = aspectMap[cardSize] || 'aspect-[4/5]';
+
+  const columnsClass = columns === 4
+    ? 'grid-cols-2 md:grid-cols-4'
+    : columns === 2
+    ? 'grid-cols-2 md:grid-cols-2'
+    : 'grid-cols-2 md:grid-cols-3';
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -69,7 +83,7 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
           variants={{
             visible: { transition: { staggerChildren: 0.1 } },
           }}
-          className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5"
+          className={`grid ${columnsClass} gap-3 md:gap-5`}
         >
           {categories.slice(0, 6).map((category, index) => (
             <motion.div
@@ -78,10 +92,11 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
                 hidden: { opacity: 0, y: 40 },
                 visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] } },
               }}
+              whileTap={{ scale: 0.96 }}
             >
             <Link
               href={`/explore/${category.slug}`}
-              className={`group relative overflow-hidden aspect-[3/4] md:aspect-[4/5] bg-luxury-charcoal block ${
+              className={`group relative overflow-hidden ${aspectClass} bg-luxury-charcoal block ${
                 index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
               } ${index === 3 ? 'lg:col-span-2' : ''}`}
             >

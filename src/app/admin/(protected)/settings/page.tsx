@@ -13,6 +13,8 @@ interface Settings {
   whatsappNumber: string;
   whatsappMessage: string;
   heroSpeed: string;
+  exploreColumns: string;
+  exploreCardSize: string;
   aboutTitle: string;
   aboutContent: string;
   aboutImage: string;
@@ -241,6 +243,31 @@ export default function AdminSettingsPage() {
               <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Auto-Scroll Speed (milliseconds)</label>
               <input value={settings.heroSpeed} onChange={(e) => updateField('heroSpeed', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" placeholder="5000" />
               <p className="text-xs text-luxury-white/20 mt-1">Lower = faster. 3000 = 3 seconds, 5000 = 5 seconds, 8000 = 8 seconds. Default: 5000.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Explore Section */}
+        <section className="bg-luxury-charcoal/40 border border-luxury-gunmetal/20 p-6 md:p-8">
+          <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 mb-6 font-medium">Explore Section</h2>
+          <div className="space-y-5">
+            <div>
+              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Number of Columns</label>
+              <select value={settings.exploreColumns} onChange={(e) => updateField('exploreColumns', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm">
+                <option value="2">2 Columns (larger cards)</option>
+                <option value="3">3 Columns (balanced)</option>
+                <option value="4">4 Columns (compact)</option>
+              </select>
+              <p className="text-xs text-luxury-white/20 mt-1">Number of category cards per row on desktop.</p>
+            </div>
+            <div>
+              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Card Size</label>
+              <select value={settings.exploreCardSize} onChange={(e) => updateField('exploreCardSize', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm">
+                <option value="2-3">Compact (2:3)</option>
+                <option value="3-4">Standard (3:4)</option>
+                <option value="4-5">Tall (4:5)</option>
+              </select>
+              <p className="text-xs text-luxury-white/20 mt-1">Compact = smaller cards, Tall = larger cards.</p>
             </div>
           </div>
         </section>

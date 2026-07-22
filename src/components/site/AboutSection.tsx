@@ -69,25 +69,28 @@ export default function AboutSection({
       ref={sectionRef}
       className="relative py-16 md:py-24 overflow-hidden"
     >
-      {/* Background subtle texture */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div className="absolute inset-0 bg-gradient-to-b from-luxury-black via-luxury-charcoal/50 to-luxury-black" />
       </div>
 
       <div className="luxury-container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
-          {/* Text Content - first on mobile, right on desktop */}
+        {/* Heading - full width above */}
+        <div className="text-center md:text-left mb-8 md:mb-12 reveal">
+          <span className="section-label">About Us</span>
+          <h2 className="section-title">{title}</h2>
+          <div className="silver-divider mx-auto md:mx-0 mt-4" />
+        </div>
+
+        {/* Content + Image side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-start">
+          {/* Text Content */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-            className="order-1 lg:order-2"
           >
-            <span className="section-label">About Us</span>
-            <h2 className="section-title mb-6 md:mb-8">{title}</h2>
-
-            <div className="space-y-4 mb-8 md:mb-10">
+            <div className="space-y-4 mb-8">
               {paragraphs.map((para, i) => (
                 <p key={i} className="text-luxury-white/60 leading-relaxed font-body font-light text-sm md:text-base">
                   {para}
@@ -103,7 +106,7 @@ export default function AboutSection({
               variants={{
                 visible: { transition: { staggerChildren: 0.1 } },
               }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4"
             >
               {values.map((value) => {
                 const Icon = value.icon;
@@ -114,7 +117,7 @@ export default function AboutSection({
                       hidden: { opacity: 0, y: 20 },
                       visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } },
                     }}
-                    className="p-4 md:p-5 border border-luxury-gunmetal/30 hover:border-luxury-silver/20 
+                    className="p-4 border border-luxury-gunmetal/30 hover:border-luxury-silver/20 
                               transition-all duration-500 group"
                   >
                     <Icon
@@ -129,13 +132,12 @@ export default function AboutSection({
             </motion.div>
           </motion.div>
 
-          {/* Image - second on mobile, left on desktop */}
+          {/* Image */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
-            className="order-2 lg:order-1"
+            transition={{ duration: 0.8, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <div className="relative aspect-[4/5] overflow-hidden">
               {image ? (
@@ -143,6 +145,7 @@ export default function AboutSection({
                   src={image}
                   alt="Manilakshmi Silver Craftsmanship"
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-luxury-gunmetal to-luxury-charcoal 
@@ -155,12 +158,8 @@ export default function AboutSection({
                   </div>
                 </div>
               )}
-
-              {/* Decorative frame */}
               <div className="absolute -inset-0 border border-luxury-silver/10 pointer-events-none" />
               <div className="absolute top-6 left-6 right-6 bottom-6 border border-luxury-white/5 pointer-events-none" />
-
-              {/* Corner accents */}
               <div className="absolute top-0 left-0 w-12 h-[1px] bg-luxury-silver/30" />
               <div className="absolute top-0 left-0 w-[1px] h-12 bg-luxury-silver/30" />
               <div className="absolute top-0 right-0 w-12 h-[1px] bg-luxury-silver/30" />

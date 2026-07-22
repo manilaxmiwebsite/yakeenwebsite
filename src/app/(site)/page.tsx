@@ -58,7 +58,7 @@ export default async function HomePage() {
     updatedAt: c.updatedAt?.toISOString() || '',
   }));
 
-  const { sections, aboutTitle, aboutContent, aboutImage, whatsappNumber, whatsappMessage, heroSpeed, instagramUrl, instagramImages } = settings;
+  const { sections, aboutTitle, aboutContent, aboutImage, whatsappNumber, whatsappMessage, heroSpeed, exploreColumns, exploreCardSize, instagramUrl, instagramImages } = settings;
 
   return (
     <>
@@ -72,7 +72,11 @@ export default async function HomePage() {
       )}
 
       {sections.explore && (
-        <ExploreSection categories={categoriesData} />
+        <ExploreSection
+          categories={categoriesData}
+          columns={parseInt(exploreColumns) || 3}
+          cardSize={exploreCardSize || '4-5'}
+        />
       )}
 
       {sections.about && (

@@ -14,18 +14,20 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
+      whileTap={{ scale: 0.97 }}
       viewport={{ once: true, margin: '-50px' }}
       transition={{ duration: 0.6, delay: index * 0.1, ease: [0.25, 0.1, 0.25, 1] }}
     >
     <Link
       href={`/product/${product._id}`}
+      prefetch={true}
       className="group block"
     >
       <div className="relative overflow-hidden bg-luxury-charcoal/40 silver-border aspect-[3/4]">
-        {product.images && product.images[0] ? (
-          <img
+        {product.images && product.images[0] ? (            <img
             src={product.images[0]}
             alt={product.name}
+            loading="lazy"
             className="w-full h-full object-cover transition-all duration-700 
                      group-hover:scale-105 group-hover:brightness-110"
           />

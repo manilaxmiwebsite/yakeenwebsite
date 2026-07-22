@@ -227,25 +227,26 @@ export default function HeroCarousel({
         </div>
       </div>
 
-      {/* Navigation arrows */}
+      {/* Navigation arrows - hidden on mobile */}
       {totalSlides > 1 && (
-        <>            <button
+        <>
+          <button
             onClick={goPrev}
-            className="absolute left-2 md:left-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 
+            className="hidden md:flex absolute left-8 top-1/2 -translate-y-1/2 w-12 h-12 
                      border border-luxury-white/10 text-luxury-white/40
                      hover:bg-luxury-white/10 hover:text-luxury-white hover:border-luxury-white/20
-                     transition-all duration-500 flex items-center justify-center"
+                     transition-all duration-500 items-center justify-center"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={20} />
           </button>
           <button
             onClick={goNext}
-            className="absolute right-2 md:right-8 top-1/2 -translate-y-1/2 w-10 h-10 md:w-12 md:h-12 
+            className="hidden md:flex absolute right-8 top-1/2 -translate-y-1/2 w-12 h-12 
                      border border-luxury-white/10 text-luxury-white/40
                      hover:bg-luxury-white/10 hover:text-luxury-white hover:border-luxury-white/20
-                     transition-all duration-500 flex items-center justify-center"
+                     transition-all duration-500 items-center justify-center"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={20} />
           </button>
         </>
       )}
