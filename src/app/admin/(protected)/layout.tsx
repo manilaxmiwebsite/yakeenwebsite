@@ -1,23 +1,10 @@
 import { ReactNode } from 'react';
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import { authOptions } from '@/lib/auth';
+import { requireAdmin } from '@/lib/admin-auth';
 import AdminSidebar from '@/components/admin/Sidebar';
 
 export default async function AdminProtectedLayout({ children }: { children: ReactNode }) {
-  // Session check — must NOT be wrapped in try-catch because
-  // next/navigation's redirect() throws an internal NEXT_REDIRECT
-  // error that Next.js catches at the framework level.
-  let session;
-  try {
-    session = await getServerSession(authOptions);
-  } catch {
-    session = null;
-  }
-
-  if (!session) {
-    redirect('/admin/login');
-  }
+  // Auth check with error handling — redirect() is safely outside try-catch in requireAdmin()
+  await requireAdmin();
 
   return (
     <div className="flex min-h-screen bg-luxury-black">
