@@ -26,6 +26,9 @@ export default function HeroCarousel({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartX = useRef(0);
+  const touchDeltaX = useRef(0);
+  const isDragging = useRef(false);
   const totalSlides = products.length;
 
   const goToSlide = (index: number) => {
@@ -61,6 +64,44 @@ export default function HeroCarousel({
     };
   }, [totalSlides]);
 
+  // Touch swipe handlers
+  const handleTouchCancel = () => {
+    isDragging.current = false;
+    resetInterval();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchDeltaX.current = 0;
+    isDragging.current = true;
+    // Pause auto-scroll while touching
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging.current) return;
+    touchDeltaX.current = e.touches[0].clientX - touchStartX.current;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+
+    const SWIPE_THRESHOLD = 50;
+    if (Math.abs(touchDeltaX.current) > SWIPE_THRESHOLD) {
+      if (touchDeltaX.current > 0) {
+        goPrev();
+      } else {
+        goNext();
+      }
+    }
+
+    // Resume auto-scroll
+    resetInterval();
+  };
+
   const handleWhatsApp = (productName: string) => {
     const msg = encodeURIComponent(
       whatsappMessage.replace('{product}', productName)
@@ -86,7 +127,13 @@ export default function HeroCarousel({
   const currentProduct = products[currentIndex];
 
   return (
-    <section className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden">
+    <section
+      className="relative h-screen min-h-[600px] max-h-[900px] overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
+    >
       {/* Background images */}
       {products.map((product, index) => (
         <div
