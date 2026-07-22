@@ -7,7 +7,11 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ req, token }) => {
+        // Allow access to login page without authentication
+        if (req.nextUrl.pathname === '/admin/login') return true;
+        return !!token;
+      },
     },
   }
 );
