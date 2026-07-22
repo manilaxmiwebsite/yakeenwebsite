@@ -58,7 +58,7 @@ export default function Header({
         <div className="luxury-container">
           <div className="flex items-center justify-between h-20 md:h-24">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3 group">
+            <Link href="/" prefetch={true} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="flex items-center gap-3 group">
               {logo ? (
                 <img src={logo} alt={brandName} className="h-8 md:h-10 w-auto" />
               ) : (

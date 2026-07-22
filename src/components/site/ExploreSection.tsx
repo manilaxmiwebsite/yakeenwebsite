@@ -47,11 +47,11 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
     <section
       id="explore"
       ref={sectionRef}
-      className="relative py-24 md:py-32"
+      className="relative py-16 md:py-24"
     >
       <div className="luxury-container">
         {/* Section Header */}
-        <div className="text-center mb-16 md:mb-20 reveal">
+        <div className="text-center mb-10 md:mb-16 reveal">
           <span className="section-label">Curated Collection</span>
           <h2 className="section-title mb-6">Explore Our Collection</h2>
           <div className="silver-divider mx-auto mb-6" />
@@ -69,7 +69,7 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
           variants={{
             visible: { transition: { staggerChildren: 0.1 } },
           }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
+          className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5"
         >
           {categories.slice(0, 6).map((category, index) => (
             <motion.div
@@ -81,7 +81,7 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
             >
             <Link
               href={`/explore/${category.slug}`}
-              className={`group relative overflow-hidden aspect-[4/5] bg-luxury-charcoal block ${
+              className={`group relative overflow-hidden aspect-[3/4] md:aspect-[4/5] bg-luxury-charcoal block ${
                 index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
               } ${index === 3 ? 'lg:col-span-2' : ''}`}
             >
@@ -102,18 +102,18 @@ export default function ExploreSection({ categories }: ExploreSectionProps) {
                             transition-all duration-700 m-4" />
 
               {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8">
-                <h3 className="font-display text-xl md:text-3xl text-luxury-white mb-2 
+              <div className="absolute bottom-0 left-0 right-0 p-3 md:p-8">
+                <h3 className="font-display text-base md:text-3xl text-luxury-white mb-1 md:mb-2 
                             transform transition-all duration-500 
                             group-hover:translate-x-2">
                   {category.name}
                 </h3>
                 {category.description && (
-                  <p className="text-sm text-luxury-white/40 mb-4 line-clamp-1">
+                  <p className="text-[10px] md:text-sm text-luxury-white/40 mb-1 md:mb-4 line-clamp-1 hidden md:block">
                     {category.description}
                   </p>
                 )}
-                <div className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-luxury-silver/60
+                <div className="hidden md:flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-luxury-silver/60
                               opacity-0 group-hover:opacity-100 transition-all duration-500 
                               transform translate-y-2 group-hover:translate-y-0">
                   <span>Explore Collection</span>

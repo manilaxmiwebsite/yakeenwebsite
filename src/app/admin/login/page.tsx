@@ -39,21 +39,21 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-luxury-black flex items-center justify-center">
-      <div className="w-full max-w-md mx-4">
+    <div className="min-h-screen bg-luxury-black flex items-center justify-center p-4">
+      <div className="w-full max-w-sm mx-auto">
         {/* Brand */}
-        <div className="text-center mb-10">
-          <div className="w-16 h-16 border border-luxury-silver/30 flex items-center justify-center mx-auto mb-4">
-            <span className="text-luxury-silver text-3xl font-display font-bold">M</span>
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 border border-luxury-silver/30 flex items-center justify-center mx-auto mb-3">
+            <span className="text-luxury-silver text-2xl font-display font-bold">M</span>
           </div>
-          <h1 className="text-2xl font-display text-luxury-white mb-1">Manilakshmi Silver</h1>
-          <p className="text-sm text-luxury-white/40">Admin Panel</p>
+          <h1 className="text-xl md:text-2xl font-display text-luxury-white mb-1">Manilakshmi Silver</h1>
+          <p className="text-xs text-luxury-white/40">Admin Panel</p>
         </div>
 
         {/* Login Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-luxury-charcoal/60 border border-luxury-gunmetal/30 p-8 space-y-6"
+          className="bg-luxury-charcoal/60 border border-luxury-gunmetal/30 p-6 md:p-8 space-y-5"
         >
           <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 text-center font-medium">
             Sign In
@@ -74,8 +74,10 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
+              inputMode="email"
               className="w-full bg-luxury-black border border-luxury-gunmetal/50 px-4 py-3 
-                       text-luxury-white placeholder:text-luxury-steel/30
+                       text-luxury-white placeholder:text-luxury-steel/30 text-base
                        focus:outline-none focus:border-luxury-silver/30 transition-all duration-300"
               placeholder="admin@manilakshmi.com"
             />
@@ -91,8 +93,9 @@ export default function AdminLoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                autoComplete="current-password"
                 className="w-full bg-luxury-black border border-luxury-gunmetal/50 px-4 py-3 
-                         text-luxury-white placeholder:text-luxury-steel/30 pr-12
+                         text-luxury-white placeholder:text-luxury-steel/30 pr-12 text-base
                          focus:outline-none focus:border-luxury-silver/30 transition-all duration-300"
                 placeholder="Enter your password"
               />

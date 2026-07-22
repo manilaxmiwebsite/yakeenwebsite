@@ -12,9 +12,7 @@ interface AboutSectionProps {
 
 export default function AboutSection({
   title = 'Our Legacy of Silver Craftsmanship',
-  content = `For generations, Manilakshmi Silver has been synonymous with unparalleled craftsmanship and timeless elegance. Each piece is meticulously handcrafted by master artisans who transform pure silver into wearable art. Our commitment to quality, purity, and design excellence has made us a trusted name in premium silver jewelry.
-
-Every creation from our atelier carries forward a tradition of excellence, blending heritage techniques with contemporary aesthetics. We source only the finest silver, ensuring each piece meets the highest standards of purity and durability.`,
+  content = `For generations, Manilakshmi Silver has been synonymous with unparalleled craftsmanship and timeless elegance. Each piece is meticulously handcrafted by master artisans who transform pure silver into wearable art. Our commitment to quality, purity, and design excellence has made us a trusted name in premium silver jewelry.\n\nEvery creation from our atelier carries forward a tradition of excellence, blending heritage techniques with contemporary aesthetics. We source only the finest silver, ensuring each piece meets the highest standards of purity and durability.`,
   image = '',
 }: AboutSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -69,7 +67,7 @@ Every creation from our atelier carries forward a tradition of excellence, blend
     <section
       id="about"
       ref={sectionRef}
-      className="relative py-24 md:py-32 overflow-hidden"
+      className="relative py-16 md:py-24 overflow-hidden"
     >
       {/* Background subtle texture */}
       <div className="absolute inset-0 opacity-[0.02]">
@@ -77,14 +75,67 @@ Every creation from our atelier carries forward a tradition of excellence, blend
       </div>
 
       <div className="luxury-container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Image Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
+          {/* Text Content - first on mobile, right on desktop */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 1, ease: [0.25, 0.1, 0.25, 1] }}
-            className="relative"
+            transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+            className="order-1 lg:order-2"
+          >
+            <span className="section-label">About Us</span>
+            <h2 className="section-title mb-6 md:mb-8">{title}</h2>
+
+            <div className="space-y-4 mb-8 md:mb-10">
+              {paragraphs.map((para, i) => (
+                <p key={i} className="text-luxury-white/60 leading-relaxed font-body font-light text-sm md:text-base">
+                  {para}
+                </p>
+              ))}
+            </div>
+
+            {/* Values */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                visible: { transition: { staggerChildren: 0.1 } },
+              }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-5"
+            >
+              {values.map((value) => {
+                const Icon = value.icon;
+                return (
+                  <motion.div
+                    key={value.title}
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } },
+                    }}
+                    className="p-4 md:p-5 border border-luxury-gunmetal/30 hover:border-luxury-silver/20 
+                              transition-all duration-500 group"
+                  >
+                    <Icon
+                      size={16}
+                      className="text-luxury-silver/60 mb-2 group-hover:text-luxury-silver transition-colors duration-500"
+                    />
+                    <h4 className="text-xs md:text-sm font-display text-luxury-white mb-1">{value.title}</h4>
+                    <p className="text-xs text-luxury-white/40 leading-relaxed">{value.desc}</p>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </motion.div>
+
+          {/* Image - second on mobile, left on desktop */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+            className="order-2 lg:order-1"
           >
             <div className="relative aspect-[4/5] overflow-hidden">
               {image ? (
@@ -119,58 +170,6 @@ Every creation from our atelier carries forward a tradition of excellence, blend
               <div className="absolute bottom-0 right-0 w-12 h-[1px] bg-luxury-silver/30" />
               <div className="absolute bottom-0 right-0 w-[1px] h-12 bg-luxury-silver/30" />
             </div>
-          </motion.div>
-
-          {/* Content Side */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-100px' }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          >
-            <span className="section-label">About Us</span>
-            <h2 className="section-title mb-8">{title}</h2>
-
-            <div className="space-y-5 mb-10">
-              {paragraphs.map((para, i) => (
-                <p key={i} className="text-luxury-white/60 leading-relaxed font-body font-light">
-                  {para}
-                </p>
-              ))}
-            </div>
-
-            {/* Values */}
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                visible: { transition: { staggerChildren: 0.1 } },
-              }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-5"
-            >
-              {values.map((value) => {
-                const Icon = value.icon;
-                return (
-                  <motion.div
-                    key={value.title}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] } },
-                    }}
-                    className="p-5 border border-luxury-gunmetal/30 hover:border-luxury-silver/20 
-                              transition-all duration-500 group"
-                  >
-                    <Icon
-                      size={18}
-                      className="text-luxury-silver/60 mb-3 group-hover:text-luxury-silver transition-colors duration-500"
-                    />
-                    <h4 className="text-sm font-display text-luxury-white mb-1">{value.title}</h4>
-                    <p className="text-xs text-luxury-white/40 leading-relaxed">{value.desc}</p>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
           </motion.div>
         </div>
       </div>

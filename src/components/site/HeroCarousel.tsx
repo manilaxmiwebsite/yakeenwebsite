@@ -104,9 +104,11 @@ export default function HeroCarousel({
     resetInterval();
   };
 
-  const handleWhatsApp = (productName: string) => {
+  const handleWhatsApp = (productName: string, productId: string) => {
+    const productUrl = window.location.origin + '/product/' + productId;
     const msg = encodeURIComponent(
-      whatsappMessage.replace('{product}', productName)
+      whatsappMessage.replace('{product}', productName) +
+      `\n\nProduct Link: ${productUrl}`
     );
     window.open(
       `https://wa.me/${whatsappNumber.replace(/[^0-9]/g, '')}?text=${msg}`,
@@ -209,7 +211,7 @@ export default function HeroCarousel({
               transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
             >
               <button
-                onClick={() => handleWhatsApp(currentProduct.name)}
+                onClick={() => handleWhatsApp(currentProduct.name, currentProduct._id)}
                 className="group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 
                          bg-luxury-white/10 backdrop-blur-md border border-luxury-white/20
                          text-luxury-white text-xs md:text-sm tracking-[0.15em] uppercase font-medium
