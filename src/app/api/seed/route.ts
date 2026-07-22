@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/db';
 import { Admin } from '@/lib/models/Admin';
 import { Category } from '@/lib/models/Category';
+import { Certificate } from '@/lib/models/Certificate';
 import { Product } from '@/lib/models/Product';
 import { Setting } from '@/lib/models/Setting';
 import { SETTING_KEYS } from '@/lib/site-data';
@@ -160,7 +161,24 @@ async function seedData() {
     results.products = `Products already exist (${productCount})`;
   }
 
-  // 4. Seed Settings
+  // 4. Seed Certificates
+  const certCount = await Certificate.countDocuments();
+  if (certCount === 0) {
+    const placeholderCertificates = [
+      { title: 'Hallmark Certification', image: 'https://images.unsplash.com/photo-1586339949916-3e5457d58f20?w=600&q=80', isActive: true },
+      { title: 'Purity Test Certificate', image: 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=600&q=80', isActive: true },
+      { title: 'Silver Quality Assurance', image: 'https://images.unsplash.com/photo-1577896851231-70acf6941cc4?w=600&q=80', isActive: true },
+      { title: 'Authenticity Certification', image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80', isActive: true },
+      { title: 'Assay Certificate', image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80', isActive: true },
+      { title: 'Gemstone Certification', image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=600&q=80', isActive: true },
+    ];
+    await Certificate.insertMany(placeholderCertificates);
+    results.certificates = `Created ${placeholderCertificates.length} certificates`;
+  } else {
+    results.certificates = `Certificates already exist (${certCount})`;
+  }
+
+  // 5. Seed Settings
   const defaultSettings = [
     { key: SETTING_KEYS.WHATSAPP_NUMBER, value: '919876543210' },
     { key: SETTING_KEYS.WHATSAPP_MESSAGE, value: 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.' },
