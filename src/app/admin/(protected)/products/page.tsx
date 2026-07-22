@@ -33,8 +33,8 @@ export default function AdminProductsPage() {
       ]);
       const prodData = await prodRes.json();
       const catData = await catRes.json();
-      setProducts(prodData);
-      setCategories(catData);
+      setProducts(Array.isArray(prodData) ? prodData : []);
+      setCategories(Array.isArray(catData) ? catData : []);
     } catch {
       toast.error('Failed to load data');
     } finally {
@@ -127,10 +127,6 @@ export default function AdminProductsPage() {
     }
   };
 
-  const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase())
-  );
-
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -138,6 +134,12 @@ export default function AdminProductsPage() {
       </div>
     );
   }
+
+  const filteredProducts = Array.isArray(products)
+    ? products.filter((p) =>
+        p.name.toLowerCase().includes(search.toLowerCase())
+      )
+    : [];
 
   return (
     <div>
