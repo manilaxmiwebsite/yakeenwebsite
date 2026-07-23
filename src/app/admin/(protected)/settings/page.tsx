@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, FormEvent, useCallback } from 'react';
-import { Save, Eye, EyeOff, Plus, Trash2, MoveUp, MoveDown } from 'lucide-react';
+import { Save, Eye, EyeOff, Plus, Trash2, MoveUp, MoveDown, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
+import { ICategory } from '@/types';
 
 interface InstagramImageEntry {
   image: string;
@@ -16,6 +17,7 @@ interface Settings {
   heroSpeed: string;
   exploreColumns: string;
   exploreCardSize: string;
+  exploreCategoryIds: string;
   aboutTitle: string;
   aboutContent: string;
   aboutImage: string;
@@ -39,6 +41,7 @@ interface Settings {
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [allCategories, setAllCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -48,8 +51,12 @@ export default function AdminSettingsPage() {
 
   const fetchSettings = useCallback(async () => {
     try {
-      const res = await fetch('/api/settings');
-      const data = await res.json();
+      const [settRes, catRes] = await Promise.all([
+        fetch('/api/settings'),
+        fetch('/api/categories'),
+      ]);
+      const data = await settRes.json();
+      const cats = await catRes.json();
       // Parse instagramImages from JSON string if needed
       let parsedImages: InstagramImageEntry[] = [];
       if (data.instagramImages) {
@@ -60,6 +67,7 @@ export default function AdminSettingsPage() {
         }
       }
       setSettings({ ...data, instagramImages: parsedImages });
+      setAllCategories(Array.isArray(cats) ? cats : []);
     } catch {
       toast.error('Failed to load settings');
     } finally {
@@ -143,6 +151,46 @@ export default function AdminSettingsPage() {
     if (!settings) return;
     setSettings({ ...settings, [key]: value });
   };
+
+  // Explore category selection
+  const getSelectedCategoryIds = (): string[] => {
+    if (!settings?.exploreCategoryIds) return [];
+    try {
+      const parsed = JSON.parse(settings.exploreCategoryIds);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const toggleExploreCategory = (catId: string) => {
+    if (!settings) return;
+    const current = getSelectedCategoryIds();
+    const updated = current.includes(catId)
+      ? current.filter(id => id !== catId)
+      : [...current, catId];
+    updateField('exploreCategoryIds', JSON.stringify(updated));
+  };
+
+  const moveExploreCategory = (index: number, direction: 'up' | 'down') => {
+    if (!settings) return;
+    const current = getSelectedCategoryIds();
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= current.length) return;
+    [current[index], current[newIndex]] = [current[newIndex], current[index]];
+    updateField('exploreCategoryIds', JSON.stringify(current));
+  };
+
+  const removeExploreCategory = (catId: string) => {
+    if (!settings) return;
+    const current = getSelectedCategoryIds().filter(id => id !== catId);
+    updateField('exploreCategoryIds', JSON.stringify(current));
+  };
+
+  const selectedCategoryIds = getSelectedCategoryIds();
+  const selectedCategories = allCategories.filter(c => selectedCategoryIds.includes(c._id))
+    .sort((a, b) => selectedCategoryIds.indexOf(a._id) - selectedCategoryIds.indexOf(b._id));
+  const availableCategories = allCategories.filter(c => !selectedCategoryIds.includes(c._id) && c.isActive);
 
   const addInstagramImage = () => {
     if (!settings) return;
@@ -277,6 +325,71 @@ export default function AdminSettingsPage() {
                 <option value="4-5">Tall (4:5)</option>
               </select>
               <p className="text-xs text-luxury-white/20 mt-1">Compact = smaller cards, Tall = larger cards.</p>
+            </div>
+
+            {/* Category Selection */}
+            <div className="pt-4 border-t border-luxury-gunmetal/20">
+              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-3">
+                Featured Categories ({selectedCategories.length} selected)
+              </label>
+              <p className="text-xs text-luxury-white/20 mb-3">
+                Pick the categories to show on the homepage explore section. Selected categories appear in the order shown below (up to 6).
+              </p>
+
+              {/* Selected categories */}
+              {selectedCategories.length > 0 && (
+                <div className="space-y-2 mb-4">
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-luxury-silver/40">Selected</label>
+                  {selectedCategories.map((cat, index) => (
+                    <div key={cat._id} className="flex items-center gap-2 bg-luxury-black/50 border border-luxury-gunmetal/30 px-3 py-2">
+                      <div className="flex gap-1">
+                        {index > 0 && (
+                          <button type="button" onClick={() => moveExploreCategory(index, 'up')}
+                            className="text-luxury-white/30 hover:text-luxury-silver transition-colors">
+                            <MoveUp size={14} />
+                          </button>
+                        )}
+                        {index < selectedCategories.length - 1 && (
+                          <button type="button" onClick={() => moveExploreCategory(index, 'down')}
+                            className="text-luxury-white/30 hover:text-luxury-silver transition-colors">
+                            <MoveDown size={14} />
+                          </button>
+                        )}
+                      </div>
+                      <span className="flex-1 text-sm text-luxury-white/80">{cat.name}</span>
+                      <button type="button" onClick={() => removeExploreCategory(cat._id)}
+                        className="text-luxury-white/30 hover:text-red-400 transition-colors">
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Available categories to add */}
+              {availableCategories.length > 0 && selectedCategories.length < 6 && (
+                <div className="space-y-2">
+                  <label className="text-[10px] tracking-[0.15em] uppercase text-luxury-silver/40">Available Categories</label>
+                  <div className="flex flex-wrap gap-2">
+                    {availableCategories.slice(0, 12).map((cat) => (
+                      <button
+                        key={cat._id}
+                        type="button"
+                        onClick={() => toggleExploreCategory(cat._id)}
+                        className="text-xs px-3 py-1.5 border border-luxury-gunmetal/40 
+                                 text-luxury-white/60 hover:border-luxury-silver/30 hover:text-luxury-silver
+                                 transition-all duration-300"
+                      >
+                        + {cat.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedCategories.length === 0 && availableCategories.length === 0 && (
+                <p className="text-xs text-luxury-white/30">No categories available. Create categories first.</p>
+              )}
             </div>
           </div>
         </section>

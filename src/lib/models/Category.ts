@@ -5,6 +5,8 @@ export interface ICategoryDocument extends Document {
   slug: string;
   description: string;
   image: string;
+  images: string[];
+  parentId: string | null;
   isActive: boolean;
   order: number;
   createdAt: Date;
@@ -17,6 +19,8 @@ const CategorySchema = new Schema<ICategoryDocument>(
     slug: { type: String, required: true, unique: true },
     description: { type: String, default: '' },
     image: { type: String, default: '' },
+    images: { type: [String], default: [] },
+    parentId: { type: Schema.Types.ObjectId, ref: 'Category', default: null },
     isActive: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
   },

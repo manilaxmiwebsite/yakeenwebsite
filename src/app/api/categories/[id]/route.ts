@@ -37,7 +37,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const body = await request.json();
     await connectDB();
 
-    const category = await Category.findByIdAndUpdate(id, body, {
+    const category = await Category.findByIdAndUpdate(id, {
+      ...body,
+      parentId: body.parentId || null,
+    }, {
       new: true,
       runValidators: true,
     });

@@ -20,6 +20,8 @@ export interface ICategory {
   slug: string;
   description: string;
   image: string;
+  images: string[];
+  parentId: string | null;
   isActive: boolean;
   order: number;
   createdAt: string;
@@ -60,6 +62,7 @@ export interface ISiteSettings {
   footerAddress: string;
   instagramUrl: string;
   instagramImages: IInstagramImage[];
+  exploreCategoryIds: string;
   logo: string;
   brandName: string;
   sections: {

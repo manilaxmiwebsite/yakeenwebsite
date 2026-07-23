@@ -49,13 +49,23 @@ export default function ImageUpload({
         body: formData,
       });
 
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Upload failed (${res.status})`);
+      }
 
       const data = await res.json();
       setPreview(data.url);
       onUpload(data.url);
-    } catch {
-      setError('Failed to upload image');
+
+      // Reset file input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to upload image';
+      console.error('Image upload error:', err);
+      setError(message);
     } finally {
       setUploading(false);
     }
@@ -79,7 +89,11 @@ export default function ImageUpload({
             />
             <div className="absolute inset-0 bg-black/0 hover:bg-black/50 transition-all duration-300 flex items-center justify-center gap-3">
               <button
-                onClick={() => fileInputRef.current?.click()}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fileInputRef.current?.click();
+                }}
                 className="text-white/0 hover:text-white/80 text-xs uppercase tracking-[0.1em] transition-all duration-300"
                 disabled={uploading}
               >
@@ -87,6 +101,7 @@ export default function ImageUpload({
               </button>
               {onRemove && (
                 <button
+                  type="button"
                   onClick={onRemove}
                   className="text-white/0 hover:text-red-400 transition-all duration-300"
                 >
@@ -97,7 +112,11 @@ export default function ImageUpload({
           </>
         ) : (
           <button
-            onClick={() => fileInputRef.current?.click()}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              fileInputRef.current?.click();
+            }}
             className="w-full h-full flex flex-col items-center justify-center gap-2 
                      text-luxury-white/30 hover:text-luxury-silver/60 hover:bg-luxury-black/20 
                      transition-all duration-300"

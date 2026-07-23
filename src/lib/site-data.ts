@@ -8,6 +8,7 @@ export interface SiteSettings {
   heroSpeed: string;
   exploreColumns: string;
   exploreCardSize: string;
+  exploreCategoryIds: string;
   aboutTitle: string;
   aboutContent: string;
   aboutImage: string;
@@ -36,6 +37,7 @@ const defaultSettings: SiteSettings = {
   heroSpeed: '5000',
   exploreColumns: '3',
   exploreCardSize: '4-5',
+  exploreCategoryIds: '',
   aboutTitle: 'Our Legacy',
   aboutContent: 'For generations, Manilakshmi Silver has been synonymous with unparalleled craftsmanship and timeless elegance. Each piece is meticulously handcrafted by master artisans who transform pure silver into wearable art. Our commitment to quality, purity, and design excellence has made us a trusted name in premium silver jewelry.',
   aboutImage: '/placeholder-about.jpg',
@@ -64,6 +66,7 @@ export const SETTING_KEYS = {
   HERO_SPEED: 'heroSpeed',
   EXPLORE_COLUMNS: 'exploreColumns',
   EXPLORE_CARD_SIZE: 'exploreCardSize',
+  EXPLORE_CATEGORY_IDS: 'exploreCategoryIds',
   ABOUT_TITLE: 'aboutTitle',
   ABOUT_CONTENT: 'aboutContent',
   ABOUT_IMAGE: 'aboutImage',
@@ -99,6 +102,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       heroSpeed: settingMap[SETTING_KEYS.HERO_SPEED] || defaultSettings.heroSpeed,
       exploreColumns: settingMap[SETTING_KEYS.EXPLORE_COLUMNS] || defaultSettings.exploreColumns,
       exploreCardSize: settingMap[SETTING_KEYS.EXPLORE_CARD_SIZE] || defaultSettings.exploreCardSize,
+      exploreCategoryIds: settingMap[SETTING_KEYS.EXPLORE_CATEGORY_IDS] || '',
       aboutTitle: settingMap[SETTING_KEYS.ABOUT_TITLE] || defaultSettings.aboutTitle,
       aboutContent: settingMap[SETTING_KEYS.ABOUT_CONTENT] || defaultSettings.aboutContent,
       aboutImage: settingMap[SETTING_KEYS.ABOUT_IMAGE] || defaultSettings.aboutImage,

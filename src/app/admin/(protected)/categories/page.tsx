@@ -15,6 +15,8 @@ export default function AdminCategoriesPage() {
     name: '',
     description: '',
     image: '',
+    images: [''] as string[],
+    parentId: '',
     isActive: true,
     order: 0,
   });
@@ -36,7 +38,7 @@ export default function AdminCategoriesPage() {
   }, [fetchData]);
 
   const resetForm = () => {
-    setForm({ name: '', description: '', image: '', isActive: true, order: 0 });
+    setForm({ name: '', description: '', image: '', images: [''], parentId: '', isActive: true, order: 0 });
     setEditingId(null);
     setShowForm(false);
   };
@@ -46,6 +48,8 @@ export default function AdminCategoriesPage() {
       name: cat.name,
       description: cat.description || '',
       image: cat.image || '',
+      images: cat.images?.length ? cat.images : [''],
+      parentId: cat.parentId || '',
       isActive: cat.isActive,
       order: cat.order || 0,
     });
@@ -143,13 +147,51 @@ export default function AdminCategoriesPage() {
                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={2} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm resize-none" />
               </div>
               <div>
-                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Category Image</label>
-                <ImageUpload
-                  currentImage={form.image}
-                  onUpload={(url) => setForm({ ...form, image: url })}
-                  onRemove={() => setForm({ ...form, image: '' })}
-                  aspectRatio="aspect-[4/3]"
-                />
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Parent Category (optional)</label>
+                <select
+                  value={form.parentId}
+                  onChange={(e) => setForm({ ...form, parentId: e.target.value })}
+                  className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm"
+                >
+                  <option value="">— Top Level Category —</option>
+                  {categories
+                    .filter(c => c._id !== editingId)
+                    .map((cat) => (
+                      <option key={cat._id} value={cat._id}>{cat.name}</option>
+                    ))}
+                </select>
+                <p className="text-xs text-luxury-white/20 mt-1">Leave empty for a top-level category. Select a parent to make this a sub-category.</p>
+              </div>
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Category Images</label>
+                <p className="text-xs text-luxury-white/20 mb-3">Upload multiple images. These will be shown as a slideshow on the homepage.</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-3">
+                  {form.images.map((img, i) => (
+                    <ImageUpload
+                      key={i}
+                      currentImage={img}
+                      onUpload={(url) => {
+                        const newImages = [...form.images];
+                        newImages[i] = url;
+                        setForm({ ...form, images: newImages, image: i === 0 ? url : form.image });
+                      }}
+                      onRemove={form.images.length > 1 ? () => {
+                        const newImages = form.images.filter((_, j) => j !== i);
+                        const newImage = i === 0 ? (newImages[0] || '') : form.image;
+                        setForm({ ...form, images: newImages, image: newImage });
+                      } : undefined}
+                      label={`Image ${i + 1}`}
+                      aspectRatio="aspect-[16/9]"
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, images: [...form.images, ''] })}
+                  className="text-xs text-luxury-silver/50 hover:text-luxury-silver transition-colors"
+                >
+                  + Add another image
+                </button>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
@@ -185,8 +227,8 @@ export default function AdminCategoriesPage() {
             <div key={cat._id} className="bg-luxury-charcoal/60 border border-luxury-gunmetal/30 p-5 hover:border-luxury-silver/20 transition-all duration-500">
               <div className="flex items-start gap-4">
                 <div className="w-14 h-14 shrink-0 bg-luxury-black border border-luxury-gunmetal/30 overflow-hidden">
-                  {cat.image ? (
-                    <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                  {cat.images?.[0] || cat.image ? (
+                    <img src={cat.images?.[0] || cat.image} alt={cat.name} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <span className="text-luxury-white/10 font-display text-xl">{cat.name.charAt(0)}</span>
@@ -196,11 +238,17 @@ export default function AdminCategoriesPage() {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-display text-luxury-white">{cat.name}</h3>
                   {cat.description && <p className="text-xs text-luxury-white/40 mt-1 line-clamp-2">{cat.description}</p>}
-                  <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
                     <span className={`text-[10px] px-2 py-0.5 ${cat.isActive ? 'text-green-400 bg-green-400/10' : 'text-luxury-white/30 bg-luxury-white/5'}`}>
                       {cat.isActive ? 'Active' : 'Inactive'}
                     </span>
                     <span className="text-[10px] text-luxury-white/20">Order: {cat.order}</span>
+                    {cat.images?.length > 0 && (
+                      <span className="text-[10px] text-luxury-silver/40">{cat.images.length} image{(cat.images.length || 0) > 1 ? 's' : ''}</span>
+                    )}
+                    {cat.parentId && (
+                      <span className="text-[10px] text-blue-400/60">Sub-category</span>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-1">

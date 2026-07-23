@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
@@ -10,9 +10,40 @@ interface ExploreSectionProps {
   categories: ICategory[];
   columns?: number;
   cardSize?: string;
+  totalCategoryCount?: number;
 }
 
-export default function ExploreSection({ categories, columns = 3, cardSize = '4-5' }: ExploreSectionProps) {
+function ImageCarousel({ images, name }: { images: string[]; name: string }) {
+  const [current, setCurrent] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (images.length <= 1) return;
+    intervalRef.current = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % images.length);
+    }, 3000);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [images.length]);
+
+  return (
+    <>
+      {images.map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt={`${name} ${i + 1}`}
+          className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ${
+            i === current ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+          } group-hover:scale-110`}
+        />
+      ))}
+    </>
+  );
+}
+
+export default function ExploreSection({ categories, columns = 3, cardSize = '4-5', totalCategoryCount }: ExploreSectionProps) {
   const aspectMap: Record<string, string> = {
     '2-3': 'aspect-[2/3]',
     '3-4': 'aspect-[3/4]',
@@ -48,13 +79,20 @@ export default function ExploreSection({ categories, columns = 3, cardSize = '4-
     return () => observer.disconnect();
   }, []);
 
-  const categoryImages: Record<string, string> = {
+  const fallbackImages: Record<string, string> = {
     'Chains': 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=800&q=80',
     'Bracelets': 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=800&q=80',
     'God Idols': 'https://images.unsplash.com/photo-1608156639585-b3a032ef9689?w=800&q=80',
     'Rings': 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?w=800&q=80',
     'Anklets': 'https://images.unsplash.com/photo-1515562141589-67f0cabc5c7a?w=800&q=80',
     'Silver Gift Items': 'https://images.unsplash.com/photo-1606738132449-1b1c0cb81e32?w=800&q=80',
+  };
+
+  const allImages = (cat: ICategory): string[] => {
+    const imgs = cat.images?.filter(Boolean) || [];
+    if (imgs.length > 0) return imgs;
+    const fallback = fallbackImages[cat.name];
+    return fallback ? [fallback] : [];
   };
 
   return (
@@ -85,7 +123,9 @@ export default function ExploreSection({ categories, columns = 3, cardSize = '4-
           }}
           className={`grid ${columnsClass} gap-3 md:gap-5`}
         >
-          {categories.slice(0, 6).map((category, index) => (
+          {categories.slice(0, 6).map((category, index) => {
+            const images = allImages(category);
+            return (
             <motion.div
               key={category._id}
               variants={{
@@ -100,13 +140,14 @@ export default function ExploreSection({ categories, columns = 3, cardSize = '4-
                 index === 0 ? 'lg:col-span-2 lg:row-span-2' : ''
               } ${index === 3 ? 'lg:col-span-2' : ''}`}
             >
-              {/* Background Image */}
-              <img
-                src={category.image || categoryImages[category.name] || ''}
-                alt={category.name}
-                className="w-full h-full object-cover transition-all duration-1000 
-                         group-hover:scale-110"
-              />
+              {/* Carousel Images */}
+              {images.length > 0 ? (
+                <ImageCarousel images={images} name={category.name} />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <span className="font-display text-6xl text-luxury-white/5">{category.name.charAt(0)}</span>
+                </div>
+              )}
 
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/90 via-luxury-black/30 to-luxury-black/10
@@ -137,8 +178,25 @@ export default function ExploreSection({ categories, columns = 3, cardSize = '4-
               </div>
             </Link>
             </motion.div>
-          ))}
+            );
+          })}
         </motion.div>
+
+        {/* See All Button */}
+        {totalCategoryCount !== undefined && totalCategoryCount > categories.length && categories.length >= 6 && (
+          <div className="text-center mt-10 md:mt-14">
+            <Link
+              href="/explore"
+              className="inline-flex items-center gap-2 px-8 py-3.5 border border-luxury-silver/30 
+                       text-xs tracking-[0.2em] uppercase text-luxury-silver/70 
+                       hover:bg-luxury-silver/10 hover:border-luxury-silver/50 
+                       transition-all duration-300 group"
+            >
+              <span>View All Categories</span>
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );
