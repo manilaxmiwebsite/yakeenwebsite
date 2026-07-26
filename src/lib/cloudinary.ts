@@ -15,6 +15,14 @@ export async function uploadImage(image: string): Promise<string> {
   return result.secure_url;
 }
 
+export async function uploadFile(file: string): Promise<string> {
+  const result = await cloudinary.uploader.upload(file, {
+    folder: 'manilakshmi-silver',
+    resource_type: 'auto',
+  });
+  return result.secure_url;
+}
+
 export async function deleteImage(publicId: string): Promise<void> {
   await cloudinary.uploader.destroy(publicId);
 }

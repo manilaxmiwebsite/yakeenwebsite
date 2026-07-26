@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface ICertificateDocument extends Document {
   title: string;
   image: string;
+  pdf?: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -12,6 +13,7 @@ const CertificateSchema = new Schema<ICertificateDocument>(
   {
     title: { type: String, required: true },
     image: { type: String, required: true },
+    pdf: { type: String, default: '' },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }

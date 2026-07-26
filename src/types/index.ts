@@ -32,6 +32,7 @@ export interface ICertificate {
   _id: string;
   title: string;
   image: string;
+  pdf?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

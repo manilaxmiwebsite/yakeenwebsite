@@ -10,7 +10,7 @@ export default function AdminCertificatesPage() {
   const [certificates, setCertificates] = useState<ICertificate[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ title: '', image: '', isActive: true });
+  const [form, setForm] = useState({ title: '', image: '', pdf: '', isActive: true });
 
   const fetchData = useCallback(async () => {
     try {
@@ -40,7 +40,7 @@ export default function AdminCertificatesPage() {
       });
       if (!res.ok) throw new Error('Failed');
       toast.success('Certificate added');
-      setForm({ title: '', image: '', isActive: true });
+      setForm({ title: '', image: '', pdf: '', isActive: true });
       setShowForm(false);
       fetchData();
     } catch {
@@ -108,6 +108,59 @@ export default function AdminCertificatesPage() {
                   aspectRatio="aspect-[3/4]"
                 />
               </div>
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">PDF Document (optional)</label>
+                <div className="flex gap-2">
+                  <input
+                    value={form.pdf}
+                    onChange={(e) => setForm({ ...form, pdf: e.target.value })}
+                    className="flex-1 bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm"
+                    placeholder="PDF URL or upload below"
+                  />
+                </div>
+                <div className="mt-2">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      try {
+                        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                        const data = await res.json();
+                        if (data.url) {
+                          setForm({ ...form, pdf: data.url });
+                          toast.success('PDF uploaded');
+                        }
+                      } catch {
+                        toast.error('Failed to upload PDF');
+                      }
+                    }}
+                    className="text-xs text-luxury-silver/60 file:mr-3 file:py-1.5 file:px-3 file:text-xs file:bg-luxury-black file:border file:border-luxury-gunmetal/40 file:text-luxury-white file:cursor-pointer hover:file:border-luxury-silver/30 transition-all"
+                  />
+                </div>
+                {form.pdf && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <a
+                      href={form.pdf}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-luxury-silver/60 hover:text-luxury-silver underline underline-offset-2"
+                    >
+                      View uploaded PDF
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, pdf: '' })}
+                      className="text-xs text-red-400/60 hover:text-red-400"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
               <label className="flex items-center gap-2 text-sm text-luxury-white/60">
                 <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="accent-luxury-silver" />
                 Active
@@ -131,7 +184,18 @@ export default function AdminCertificatesPage() {
               <div className="aspect-[3/4]">
                 <img src={cert.image} alt={cert.title} className="w-full h-full object-cover" />
               </div>
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 flex flex-col items-center justify-center gap-3">
+                {cert.pdf && (
+                  <a
+                    href={cert.pdf}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/0 group-hover:text-luxury-silver transition-all duration-300 text-xs tracking-[0.1em] uppercase flex items-center gap-1.5 bg-luxury-black/50 px-3 py-1.5 rounded"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+                    <span>PDF</span>
+                  </a>
+                )}
                 <button
                   onClick={() => handleDelete(cert._id)}
                   className="text-white/0 group-hover:text-red-400 transition-all duration-300"

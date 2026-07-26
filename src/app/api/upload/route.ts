@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { uploadImage } from '@/lib/cloudinary';
+import { uploadFile } from '@/lib/cloudinary';
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const base64 = buffer.toString('base64');
     const dataUri = `data:${file.type};base64,${base64}`;
 
-    const url = await uploadImage(dataUri);
+    const url = await uploadFile(dataUri);
 
     return NextResponse.json({ url });
   } catch (error) {
