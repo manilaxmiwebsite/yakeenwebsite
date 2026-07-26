@@ -29,6 +29,7 @@ export interface SiteSettings {
     certificates: boolean;
     instagram: boolean;
   };
+  sectionOrder: string[];
 }
 
 const defaultSettings: SiteSettings = {
@@ -58,6 +59,7 @@ const defaultSettings: SiteSettings = {
     certificates: true,
     instagram: true,
   },
+  sectionOrder: ['hero', 'explore', 'about', 'certificates', 'instagram'],
 };
 
 export const SETTING_KEYS = {
@@ -85,6 +87,7 @@ export const SETTING_KEYS = {
   SECTION_ABOUT: 'section_about',
   SECTION_CERTIFICATES: 'section_certificates',
   SECTION_INSTAGRAM: 'section_instagram',
+  SECTION_ORDER: 'sectionOrder',
 };
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -129,6 +132,16 @@ export async function getSiteSettings(): Promise<SiteSettings> {
         certificates: settingMap[SETTING_KEYS.SECTION_CERTIFICATES] !== 'false',
         instagram: settingMap[SETTING_KEYS.SECTION_INSTAGRAM] !== 'false',
       },
+      sectionOrder: (() => {
+        const raw = settingMap[SETTING_KEYS.SECTION_ORDER];
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          } catch {}
+        }
+        return defaultSettings.sectionOrder;
+      })(),
     };
   } catch {
     return defaultSettings;

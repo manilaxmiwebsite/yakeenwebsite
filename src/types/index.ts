@@ -72,6 +72,7 @@ export interface ISiteSettings {
     certificates: boolean;
     instagram: boolean;
   };
+  sectionOrder: string[];
 }
 
 export interface IAdmin {

@@ -37,6 +37,7 @@ interface Settings {
     certificates: boolean;
     instagram: boolean;
   };
+  sectionOrder: string[];
 }
 
 export default function AdminSettingsPage() {
@@ -83,9 +84,10 @@ export default function AdminSettingsPage() {
     setSaving(true);
     try {
       // Flatten sections into individual section_* keys so updateSettings() stores them correctly
-      const { sections, ...rest } = settings;
+      const { sections, sectionOrder, ...rest } = settings;
       const flattened = {
         ...rest,
+        sectionOrder: JSON.stringify(sectionOrder),
         section_hero: String(sections.hero),
         section_explore: String(sections.explore),
         section_about: String(sections.about),
@@ -520,36 +522,77 @@ export default function AdminSettingsPage() {
           </div>
         </section>
 
-        {/* Section Visibility */}
+        {/* Section Ordering & Visibility */}
         <section className="bg-luxury-charcoal/40 border border-luxury-gunmetal/20 p-6 md:p-8">
-          <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 mb-6 font-medium">Section Visibility</h2>
-          <p className="text-xs text-luxury-white/30 mb-4">Toggle sections to show or hide them on the homepage</p>
-          <div className="space-y-3">
-            {[
-              { key: 'hero' as const, label: 'Hero Carousel' },
-              { key: 'explore' as const, label: 'Explore Categories' },
-              { key: 'about' as const, label: 'About Us' },
-              { key: 'certificates' as const, label: 'Certificates' },
-              { key: 'instagram' as const, label: 'Instagram' },
-            ].map((section) => (
-              <label key={section.key} className="flex items-center gap-3 cursor-pointer">
-                <div className={`w-10 h-5 rounded-full transition-all duration-300 flex items-center px-0.5 ${
-                  settings.sections[section.key] ? 'bg-luxury-silver' : 'bg-luxury-gunmetal'
-                }`}>
-                  <div className={`w-4 h-4 rounded-full bg-luxury-black transition-all duration-300 ${
-                    settings.sections[section.key] ? 'translate-x-5' : 'translate-x-0'
-                  }`} />
+          <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 mb-6 font-medium">Section Order & Visibility</h2>
+          <p className="text-xs text-luxury-white/30 mb-4">Drag or use arrows to reorder sections. Toggle to show/hide them on the homepage.</p>
+
+          {/* Section Order List */}
+          <div className="space-y-2 mb-6">
+            {settings.sectionOrder.map((sectionKey, index) => {
+              const labels: Record<string, string> = {
+                hero: 'Hero Carousel',
+                explore: 'Explore Categories',
+                about: 'About Us',
+                certificates: 'Certificates',
+                instagram: 'Instagram',
+              };
+              return (
+                <div key={sectionKey} className="flex items-center gap-3 bg-luxury-black/50 border border-luxury-gunmetal/30 px-4 py-3">
+                  {/* Reorder arrows */}
+                  <div className="flex gap-1">
+                    {index > 0 && (
+                      <button type="button" onClick={() => {
+                        const updated = [...settings.sectionOrder];
+                        [updated[index - 1], updated[index]] = [updated[index], updated[index - 1]];
+                        setSettings({ ...settings, sectionOrder: updated });
+                      }}
+                        className="text-luxury-white/30 hover:text-luxury-silver transition-colors">
+                        <MoveUp size={14} />
+                      </button>
+                    )}
+                    {index < settings.sectionOrder.length - 1 && (
+                      <button type="button" onClick={() => {
+                        const updated = [...settings.sectionOrder];
+                        [updated[index + 1], updated[index]] = [updated[index], updated[index + 1]];
+                        setSettings({ ...settings, sectionOrder: updated });
+                      }}
+                        className="text-luxury-white/30 hover:text-luxury-silver transition-colors">
+                        <MoveDown size={14} />
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Section label */}
+                  <span className="flex-1 text-sm text-luxury-white/80">{labels[sectionKey] || sectionKey}</span>
+
+                  {/* Visibility toggle */}
+                  <label className="flex items-center gap-2 cursor-pointer shrink-0" onClick={(e) => e.stopPropagation()}>
+                    <div className={`w-9 h-4 rounded-full transition-all duration-300 flex items-center px-0.5 ${
+                      settings.sections[sectionKey as keyof typeof settings.sections] ? 'bg-luxury-silver' : 'bg-luxury-gunmetal'
+                    }`}>
+                      <div className={`w-3 h-3 rounded-full bg-luxury-black transition-all duration-300 ${
+                        settings.sections[sectionKey as keyof typeof settings.sections] ? 'translate-x-5' : 'translate-x-0'
+                      }`} />
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={settings.sections[sectionKey as keyof typeof settings.sections]}
+                      onChange={() => toggleSection(sectionKey as keyof Settings['sections'])}
+                      className="hidden"
+                    />
+                    <span className={`text-[10px] tracking-wider uppercase ${
+                      settings.sections[sectionKey as keyof typeof settings.sections] ? 'text-luxury-silver/60' : 'text-luxury-white/30'
+                    }`}>
+                      {settings.sections[sectionKey as keyof typeof settings.sections] ? 'Visible' : 'Hidden'}
+                    </span>
+                  </label>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={settings.sections[section.key]}
-                  onChange={() => toggleSection(section.key)}
-                  className="hidden"
-                />
-                <span className="text-sm text-luxury-white/70">{section.label}</span>
-              </label>
-            ))}
+              );
+            })}
           </div>
+
+          <p className="text-xs text-luxury-white/20">Drag sections up/down to change their display order. Toggled-off sections are skipped during rendering.</p>
         </section>
 
         {/* Admin Email */}

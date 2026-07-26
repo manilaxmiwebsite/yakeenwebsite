@@ -99,46 +99,50 @@ export default async function HomePage() {
     updatedAt: c.updatedAt?.toISOString() || '',
   }));
 
-  const { sections, aboutTitle, aboutContent, aboutImage, whatsappNumber, whatsappMessage, heroSpeed, exploreColumns, exploreCardSize, instagramUrl, instagramImages } = settings;
+  const { sections, sectionOrder, aboutTitle, aboutContent, aboutImage, whatsappNumber, whatsappMessage, heroSpeed, exploreColumns, exploreCardSize, instagramUrl, instagramImages } = settings;
+
+  const sectionComponents: Record<string, React.ReactNode> = {
+    hero: sections.hero ? (
+      <HeroCarousel
+        key="hero"
+        products={heroProducts}
+        whatsappNumber={whatsappNumber}
+        whatsappMessage={whatsappMessage}
+        heroSpeed={parseInt(heroSpeed) || 5000}
+      />
+    ) : null,
+    explore: sections.explore && categoriesData.length > 0 ? (
+      <ExploreSection
+        key="explore"
+        categories={categoriesData}
+        columns={parseInt(exploreColumns) || 3}
+        cardSize={exploreCardSize || '4-5'}
+        totalCategoryCount={categories.length}
+      />
+    ) : null,
+    about: sections.about ? (
+      <AboutSection
+        key="about"
+        title={aboutTitle}
+        content={aboutContent}
+        image={aboutImage}
+      />
+    ) : null,
+    certificates: sections.certificates ? (
+      <CertificatesSection key="certificates" certificates={certificatesData} />
+    ) : null,
+    instagram: sections.instagram ? (
+      <InstagramSection
+        key="instagram"
+        instagramUrl={instagramUrl}
+        instagramImages={instagramImages}
+      />
+    ) : null,
+  };
 
   return (
     <>
-      {sections.hero && (
-        <HeroCarousel
-          products={heroProducts}
-          whatsappNumber={whatsappNumber}
-          whatsappMessage={whatsappMessage}
-          heroSpeed={parseInt(heroSpeed) || 5000}
-        />
-      )}
-
-      {sections.explore && categoriesData.length > 0 && (
-        <ExploreSection
-          categories={categoriesData}
-          columns={parseInt(exploreColumns) || 3}
-          cardSize={exploreCardSize || '4-5'}
-          totalCategoryCount={categories.length}
-        />
-      )}
-
-      {sections.about && (
-        <AboutSection
-          title={aboutTitle}
-          content={aboutContent}
-          image={aboutImage}
-        />
-      )}
-
-      {sections.certificates && (
-        <CertificatesSection certificates={certificatesData} />
-      )}
-
-      {sections.instagram && (
-        <InstagramSection
-          instagramUrl={instagramUrl}
-          instagramImages={instagramImages}
-        />
-      )}
+      {sectionOrder.map((sectionKey) => sectionComponents[sectionKey])}
     </>
   );
 }

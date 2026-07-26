@@ -6,6 +6,7 @@ import { Category } from '@/lib/models/Category';
 import { Product } from '@/lib/models/Product';
 import { getSiteSettings } from '@/lib/site-data';
 import ProductCard from '@/components/site/ProductCard';
+import ProductSlideshow from '@/components/site/ProductSlideshow';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -150,7 +151,17 @@ export default async function CategoryPage({ params }: PageProps) {
   }));
 
   return (
-    <div className="pt-32 pb-24">
+    <div className="pb-24">
+      {/* Product Slideshow */}
+      {productsData.length > 0 && (
+        <ProductSlideshow
+          products={productsData}
+          whatsappNumber={settings.whatsappNumber}
+          whatsappMessage={settings.whatsappMessage}
+          autoPlaySpeed={parseInt(settings.heroSpeed) || 5000}
+        />
+      )}
+
       <div className="luxury-container">
         {/* Back link */}
         <Link
