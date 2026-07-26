@@ -35,8 +35,15 @@ export async function POST(request: NextRequest) {
 
     const slug = body.slug || slugify(body.name);
 
-    const category = await Category.create({
+    // Clean up the body: convert empty parentId to null, filter empty images
+    const cleanBody = {
       ...body,
+      parentId: body.parentId || null,
+      images: Array.isArray(body.images) ? body.images.filter(Boolean) : [],
+    };
+
+    const category = await Category.create({
+      ...cleanBody,
       slug,
     });
 
