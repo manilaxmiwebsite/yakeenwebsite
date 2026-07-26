@@ -5,6 +5,14 @@ import { Product } from '@/lib/models/Product';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
@@ -37,21 +45,38 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const body = await request.json();
     await connectDB();
 
-    const category = await Category.findByIdAndUpdate(id, {
-      ...body,
-      parentId: body.parentId || null,
-    }, {
+    const existing = await Category.findById(id);
+    if (!existing) {
+      return NextResponse.json({ error: 'Category not found' }, { status: 404 });
+    }
+
+    // If name changed, regenerate slug and ensure uniqueness
+    let updateData: Record<string, any> = { ...body, parentId: body.parentId || null };
+    if (body.name && body.name !== existing.name) {
+      let newSlug = slugify(body.name);
+      // Check if slug conflicts with another category (excluding this one)
+      const slugConflict = await Category.findOne({ slug: newSlug, _id: { $ne: id } });
+      if (slugConflict) {
+        let counter = 1;
+        while (await Category.findOne({ slug: `${newSlug}-${counter}`, _id: { $ne: id } })) {
+          counter++;
+        }
+        newSlug = `${newSlug}-${counter}`;
+      }
+      updateData.slug = newSlug;
+    }
+
+    const category = await Category.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
 
-    if (!category) {
-      return NextResponse.json({ error: 'Category not found' }, { status: 404 });
-    }
-
     return NextResponse.json(category);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating category:', error);
+    if (error?.code === 11000) {
+      return NextResponse.json({ error: 'A category with this name already exists. Try a different name.' }, { status: 409 });
+    }
     return NextResponse.json({ error: 'Failed to update category' }, { status: 500 });
   }
 }

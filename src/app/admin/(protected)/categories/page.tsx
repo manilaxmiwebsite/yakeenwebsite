@@ -105,12 +105,15 @@ export default function AdminCategoriesPage() {
         body: JSON.stringify(form),
       });
 
-      if (!res.ok) throw new Error('Failed to save');
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to save');
+      }
       toast.success(editingId ? 'Category updated' : 'Category created');
       resetForm();
       fetchData();
-    } catch {
-      toast.error('Failed to save category');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save category');
     }
   };
 

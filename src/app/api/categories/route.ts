@@ -33,7 +33,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     await connectDB();
 
-    const slug = body.slug || slugify(body.name);
+    let slug = body.slug || slugify(body.name);
+
+    // Ensure slug is unique: append -1, -2, etc. if slug already exists
+    const existingSlug = await Category.findOne({ slug });
+    if (existingSlug) {
+      let counter = 1;
+      while (await Category.findOne({ slug: `${slug}-${counter}` })) {
+        counter++;
+      }
+      slug = `${slug}-${counter}`;
+    }
 
     // Clean up the body: convert empty parentId to null, filter empty images
     const cleanBody = {
@@ -48,8 +58,12 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(category, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating category:', error);
+    // Check for MongoDB duplicate key error (code 11000)
+    if (error?.code === 11000) {
+      return NextResponse.json({ error: 'A category with this name already exists. Try a different name.' }, { status: 409 });
+    }
     return NextResponse.json({ error: 'Failed to create category' }, { status: 500 });
   }
 }
