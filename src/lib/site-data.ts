@@ -21,6 +21,7 @@ export interface SiteSettings {
   instagramImages: IInstagramImage[];
   logo: string;
   brandName: string;
+  tagline: string;
   headerLogo: string;
   sections: {
     hero: boolean;
@@ -35,6 +36,7 @@ export interface SiteSettings {
 const defaultSettings: SiteSettings = {
   whatsappNumber: '919876543210',
   whatsappMessage: 'Hello Manilakshmi Silver, I am interested in this product: {product}. Please share more details.',
+  tagline: 'Since 1965',
   heroSpeed: '5000',
   exploreColumns: '3',
   exploreCardSize: '4-5',
@@ -81,6 +83,7 @@ export const SETTING_KEYS = {
   INSTAGRAM_IMAGES: 'instagramImages',
   LOGO: 'logo',
   BRAND_NAME: 'brandName',
+  TAGLINE: 'tagline',
   HEADER_LOGO: 'headerLogo',
   SECTION_HERO: 'section_hero',
   SECTION_EXPLORE: 'section_explore',
@@ -124,6 +127,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       })(),
       logo: settingMap[SETTING_KEYS.LOGO] || '',
       brandName: settingMap[SETTING_KEYS.BRAND_NAME] || defaultSettings.brandName,
+      tagline: settingMap[SETTING_KEYS.TAGLINE] || defaultSettings.tagline,
       headerLogo: settingMap[SETTING_KEYS.HEADER_LOGO] || '',
       sections: {
         hero: settingMap[SETTING_KEYS.SECTION_HERO] !== 'false',

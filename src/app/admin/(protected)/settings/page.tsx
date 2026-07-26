@@ -29,6 +29,7 @@ interface Settings {
   instagramImages: InstagramImageEntry[];
   logo: string;
   brandName: string;
+  tagline: string;
   headerLogo: string;
   sections: {
     hero: boolean;
@@ -260,9 +261,16 @@ export default function AdminSettingsPage() {
         <section className="bg-luxury-charcoal/40 border border-luxury-gunmetal/20 p-6 md:p-8">
           <h2 className="text-xs tracking-[0.2em] uppercase text-luxury-silver/60 mb-6 font-medium">Brand Information</h2>
           <div className="space-y-5">
-            <div>
-              <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Brand Name</label>
-              <input value={settings.brandName} onChange={(e) => updateField('brandName', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Brand Name</label>
+                <input value={settings.brandName} onChange={(e) => updateField('brandName', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" />
+              </div>
+              <div>
+                <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Tagline</label>
+                <input value={settings.tagline} onChange={(e) => updateField('tagline', e.target.value)} className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm" placeholder="Since 1965" />
+                <p className="text-xs text-luxury-white/20 mt-1">Appears below the brand name in the header.</p>
+              </div>
             </div>
             <div>
               <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Logo</label>

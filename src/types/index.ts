@@ -65,6 +65,7 @@ export interface ISiteSettings {
   exploreCategoryIds: string;
   logo: string;
   brandName: string;
+  tagline: string;
   sections: {
     hero: boolean;
     explore: boolean;

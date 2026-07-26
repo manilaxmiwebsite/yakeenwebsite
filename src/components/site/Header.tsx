@@ -8,12 +8,14 @@ interface HeaderProps {
   whatsappNumber?: string;
   brandName?: string;
   logo?: string;
+  tagline?: string;
 }
 
 export default function Header({
   whatsappNumber = '919876543210',
   brandName = 'Manilakshmi Silver',
   logo = '',
+  tagline = 'Since 1965',
 }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -60,7 +62,7 @@ export default function Header({
             {/* Logo */}
             <Link href="/" prefetch={true} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="flex items-center gap-3 group">
               {logo ? (
-                <img src={logo} alt={brandName} className="h-8 md:h-10 w-auto" />
+                <img src={logo} alt={brandName} className="h-10 md:h-14 w-auto" />
               ) : (
                 <span className="text-luxury-silver text-2xl md:text-3xl font-display font-bold">M</span>
               )}
@@ -69,7 +71,7 @@ export default function Header({
                   {brandName}
                 </span>
                 <div className="text-[10px] tracking-[0.2em] uppercase text-luxury-silver/40 font-body -mt-0.5 truncate">
-                  Since 1965
+                  {tagline}
                 </div>
               </div>
             </Link>

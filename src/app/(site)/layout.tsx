@@ -13,6 +13,7 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         whatsappNumber={settings.whatsappNumber}
         brandName={settings.brandName}
         logo={settings.logo}
+        tagline={settings.tagline}
       />
       <main className="min-h-screen">{children}</main>
       <Footer
