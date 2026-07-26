@@ -14,6 +14,8 @@ export default function AdminProductsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
+  const [selectedMainCategory, setSelectedMainCategory] = useState<string>('');
+
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -25,6 +27,9 @@ export default function AdminProductsPage() {
     isHero: false,
     heroOrder: 0,
   });
+
+  const mainCategories = categories.filter((c) => !c.parentId);
+  const subCategories = categories.filter((c) => c.parentId === selectedMainCategory);
 
   const fetchData = useCallback(async () => {
     try {
@@ -59,22 +64,36 @@ export default function AdminProductsPage() {
       isHero: false,
       heroOrder: 0,
     });
+    setSelectedMainCategory('');
     setEditingId(null);
     setShowForm(false);
   };
 
   const handleEdit = (product: IProduct) => {
+    const catId = typeof product.category === 'object' ? product.category._id : product.category;
+    const productCategory = categories.find((c) => c._id === catId);
+
     setForm({
       name: product.name,
       description: product.description || '',
       caption: product.caption || '',
       details: product.details?.length ? product.details : [''],
       images: product.images?.length ? product.images : [''],
-      category: typeof product.category === 'object' ? product.category._id : product.category,
+      category: catId,
       isActive: product.isActive,
       isHero: product.isHero,
       heroOrder: product.heroOrder || 0,
     });
+
+    // Pre-select main category dropdown
+    if (productCategory) {
+      if (productCategory.parentId) {
+        setSelectedMainCategory(productCategory.parentId);
+      } else {
+        setSelectedMainCategory(productCategory._id);
+      }
+    }
+
     setEditingId(product._id);
     setShowForm(true);
   };
@@ -205,15 +224,46 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Category *</label>
+                  <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">Main Category *</label>
                   <select
-                    value={form.category}
-                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    value={selectedMainCategory}
+                    onChange={(e) => {
+                      setSelectedMainCategory(e.target.value);
+                      setForm({ ...form, category: e.target.value });
+                    }}
                     className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm"
                     required
                   >
-                    <option value="">Select category</option>
-                    {categories.map((cat) => (
+                    <option value="">Select main category</option>
+                    {mainCategories.map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs tracking-[0.15em] uppercase text-luxury-silver/60 mb-2">
+                    Sub Category
+                    {selectedMainCategory && subCategories.length > 0 && (
+                      <span className="text-luxury-white/30 ml-1">(optional)</span>
+                    )}
+                  </label>
+                  <select
+                    value={form.category !== selectedMainCategory ? form.category : ''}
+                    onChange={(e) => setForm({ ...form, category: e.target.value })}
+                    className="w-full bg-luxury-black border border-luxury-gunmetal/40 px-4 py-2.5 text-luxury-white focus:outline-none focus:border-luxury-silver/30 text-sm disabled:opacity-40"
+                    disabled={!selectedMainCategory || subCategories.length === 0}
+                  >
+                    <option value="">
+                      {!selectedMainCategory
+                        ? 'Select a main category first'
+                        : subCategories.length === 0
+                          ? 'No subcategories'
+                          : 'Select subcategory (optional)'}
+                    </option>
+                    {subCategories.map((cat) => (
                       <option key={cat._id} value={cat._id}>
                         {cat.name}
                       </option>

@@ -123,7 +123,7 @@ export default function ExploreSection({ categories, columns = 3, cardSize = '4-
           }}
           className={`grid ${columnsClass} gap-3 md:gap-5`}
         >
-          {categories.slice(0, 6).map((category, index) => {
+          {categories.map((category, index) => {
             const images = allImages(category);
             return (
             <motion.div
