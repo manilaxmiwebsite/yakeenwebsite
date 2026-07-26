@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ICertificate } from '@/types';
 import Lightbox from './Lightbox';
+import PdfViewer from './PdfViewer';
 
 interface CertificatesSectionProps {
   certificates: ICertificate[];
@@ -12,6 +13,9 @@ interface CertificatesSectionProps {
 export default function CertificatesSection({ certificates }: CertificatesSectionProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [pdfViewerOpen, setPdfViewerOpen] = useState(false);
+  const [pdfViewerUrl, setPdfViewerUrl] = useState('');
+  const [pdfViewerTitle, setPdfViewerTitle] = useState('');
   const sectionRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -98,18 +102,20 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
 
                 {/* PDF badge */}
                 {certificate.pdf && (
-                  <a
-                    href={certificate.pdf}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPdfViewerUrl(certificate.pdf!);
+                      setPdfViewerTitle(certificate.title);
+                      setPdfViewerOpen(true);
+                    }}
                     className="absolute top-3 right-3 z-10 bg-luxury-black/70 backdrop-blur-sm border border-luxury-silver/20 
                              px-2.5 py-1.5 rounded text-luxury-silver/80 hover:text-luxury-silver hover:bg-luxury-black/90
                              hover:border-luxury-silver/40 transition-all duration-300 flex items-center gap-1.5 group/pdf"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover/pdf:scale-110 transition-transform"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
                     <span className="text-[10px] tracking-[0.1em] uppercase">PDF</span>
-                  </a>
+                  </button>
                 )}
 
                 {/* Title at bottom */}
@@ -129,6 +135,14 @@ export default function CertificatesSection({ certificates }: CertificatesSectio
         onClose={() => setLightboxOpen(false)}
         onNext={() => setLightboxIndex((prev) => (prev + 1) % certificates.length)}
         onPrev={() => setLightboxIndex((prev) => (prev - 1 + certificates.length) % certificates.length)}
+      />
+
+      {/* PDF Viewer Modal */}
+      <PdfViewer
+        pdfUrl={pdfViewerUrl}
+        title={pdfViewerTitle}
+        isOpen={pdfViewerOpen}
+        onClose={() => setPdfViewerOpen(false)}
       />
 
       {/* Hide scrollbar */}
