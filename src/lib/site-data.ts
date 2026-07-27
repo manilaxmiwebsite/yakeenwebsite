@@ -22,6 +22,9 @@ export interface SiteSettings {
   logo: string;
   brandName: string;
   tagline: string;
+  logoScale: string;
+  logoOffsetX: string;
+  logoOffsetY: string;
   headerLogo: string;
   sections: {
     hero: boolean;
@@ -53,6 +56,9 @@ const defaultSettings: SiteSettings = {
   instagramImages: [],
   logo: '',
   brandName: 'Manilakshmi Silver',
+  logoScale: '1',
+  logoOffsetX: '0',
+  logoOffsetY: '0',
   headerLogo: '',
   sections: {
     hero: true,
@@ -84,6 +90,9 @@ export const SETTING_KEYS = {
   LOGO: 'logo',
   BRAND_NAME: 'brandName',
   TAGLINE: 'tagline',
+  LOGO_SCALE: 'logoScale',
+  LOGO_OFFSET_X: 'logoOffsetX',
+  LOGO_OFFSET_Y: 'logoOffsetY',
   HEADER_LOGO: 'headerLogo',
   SECTION_HERO: 'section_hero',
   SECTION_EXPLORE: 'section_explore',
@@ -128,6 +137,9 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       logo: settingMap[SETTING_KEYS.LOGO] || '',
       brandName: settingMap[SETTING_KEYS.BRAND_NAME] || defaultSettings.brandName,
       tagline: settingMap[SETTING_KEYS.TAGLINE] || defaultSettings.tagline,
+      logoScale: settingMap[SETTING_KEYS.LOGO_SCALE] || defaultSettings.logoScale,
+      logoOffsetX: settingMap[SETTING_KEYS.LOGO_OFFSET_X] || defaultSettings.logoOffsetX,
+      logoOffsetY: settingMap[SETTING_KEYS.LOGO_OFFSET_Y] || defaultSettings.logoOffsetY,
       headerLogo: settingMap[SETTING_KEYS.HEADER_LOGO] || '',
       sections: {
         hero: settingMap[SETTING_KEYS.SECTION_HERO] !== 'false',

@@ -30,6 +30,9 @@ interface Settings {
   logo: string;
   brandName: string;
   tagline: string;
+  logoScale: string;
+  logoOffsetX: string;
+  logoOffsetY: string;
   headerLogo: string;
   sections: {
     hero: boolean;
@@ -281,6 +284,118 @@ export default function AdminSettingsPage() {
                 label="Logo"
                 aspectRatio="aspect-[1/1]"
               />
+              
+              {/* Logo Zoom & Position Controls */}
+              {settings.logo && (
+                <div className="mt-4 p-4 bg-luxury-black/40 border border-luxury-gunmetal/20">
+                  <label className="block text-[10px] tracking-[0.15em] uppercase text-luxury-silver/50 mb-3">
+                    Logo Zoom & Position
+                  </label>
+                  
+                  {/* Preview */}
+                  <div className="mb-4 flex items-center gap-4">
+                    <div className="w-16 h-16 overflow-hidden bg-luxury-charcoal border border-luxury-gunmetal/30 flex-shrink-0">
+                      <img 
+                        src={settings.logo} 
+                        alt="Logo preview" 
+                        className="w-full h-full"
+                        style={{
+                          objectFit: 'cover',
+                          transform: `scale(${parseFloat(settings.logoScale) || 1}) translate(${parseFloat(settings.logoOffsetX) || 0}px, ${parseFloat(settings.logoOffsetY) || 0}px)`
+                        }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-luxury-white/30 leading-relaxed">
+                      Preview shows how the logo will appear in the header.
+                    </div>
+                  </div>
+
+                  {/* Scale */}
+                  <div className="mb-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] tracking-[0.1em] uppercase text-luxury-white/40">Zoom</span>
+                      <span className="text-[10px] text-luxury-silver/40 font-mono">{Math.round((parseFloat(settings.logoScale) || 1) * 100)}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="2"
+                      step="0.05"
+                      value={settings.logoScale}
+                      onChange={(e) => updateField('logoScale', e.target.value)}
+                      className="w-full h-1 bg-luxury-gunmetal/40 appearance-none cursor-pointer 
+                               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                               [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-luxury-silver
+                               [&::-webkit-slider-thumb]:cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[9px] text-luxury-white/20 mt-0.5">
+                      <span>50%</span>
+                      <span>200%</span>
+                    </div>
+                  </div>
+
+                  {/* Horizontal Offset */}
+                  <div className="mb-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] tracking-[0.1em] uppercase text-luxury-white/40">Horizontal</span>
+                      <span className="text-[10px] text-luxury-silver/40 font-mono">{settings.logoOffsetX}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="-30"
+                      max="30"
+                      step="1"
+                      value={settings.logoOffsetX}
+                      onChange={(e) => updateField('logoOffsetX', e.target.value)}
+                      className="w-full h-1 bg-luxury-gunmetal/40 appearance-none cursor-pointer 
+                               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                               [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-luxury-silver
+                               [&::-webkit-slider-thumb]:cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[9px] text-luxury-white/20 mt-0.5">
+                      <span>Left</span>
+                      <span>Right</span>
+                    </div>
+                  </div>
+
+                  {/* Vertical Offset */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] tracking-[0.1em] uppercase text-luxury-white/40">Vertical</span>
+                      <span className="text-[10px] text-luxury-silver/40 font-mono">{settings.logoOffsetY}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="-30"
+                      max="30"
+                      step="1"
+                      value={settings.logoOffsetY}
+                      onChange={(e) => updateField('logoOffsetY', e.target.value)}
+                      className="w-full h-1 bg-luxury-gunmetal/40 appearance-none cursor-pointer 
+                               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 
+                               [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-luxury-silver
+                               [&::-webkit-slider-thumb]:cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[9px] text-luxury-white/20 mt-0.5">
+                      <span>Up</span>
+                      <span>Down</span>
+                    </div>
+                  </div>
+                  
+                  <button
+                    type="button"
+                    onClick={() => {
+                      updateField('logoScale', '1');
+                      updateField('logoOffsetX', '0');
+                      updateField('logoOffsetY', '0');
+                    }}
+                    className="mt-3 text-[10px] tracking-[0.1em] uppercase text-luxury-silver/50 
+                             hover:text-luxury-silver transition-colors"
+                  >
+                    Reset to defaults
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>

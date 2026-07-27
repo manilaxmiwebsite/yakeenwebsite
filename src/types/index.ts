@@ -68,6 +68,9 @@ export interface ISiteSettings {
   logo: string;
   brandName: string;
   tagline: string;
+  logoScale: string;
+  logoOffsetX: string;
+  logoOffsetY: string;
   sections: {
     hero: boolean;
     explore: boolean;

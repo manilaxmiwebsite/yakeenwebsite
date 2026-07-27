@@ -14,6 +14,9 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         brandName={settings.brandName}
         logo={settings.logo}
         tagline={settings.tagline}
+        logoScale={parseFloat(settings.logoScale) || 1}
+        logoOffsetX={parseFloat(settings.logoOffsetX) || 0}
+        logoOffsetY={parseFloat(settings.logoOffsetY) || 0}
       />
       <main className="min-h-screen">{children}</main>
       <Footer

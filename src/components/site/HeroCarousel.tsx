@@ -160,15 +160,15 @@ export default function HeroCarousel({
         </div>
       ))}
 
-      {/* Overlay layers */}
-      <div className="absolute inset-0 bg-gradient-to-t from-luxury-black via-luxury-black/50 to-luxury-black/30" />
-      <div className="absolute inset-0 bg-gradient-to-r from-luxury-black/60 via-transparent to-luxury-black/30" />
+      {/* Overlay layers - brighter images with more subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/70 via-luxury-black/20 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-luxury-black/30 via-transparent to-luxury-black/20" />
 
       {/* Subtle texture overlay */}
       <div className="absolute inset-0 opacity-[0.03] bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjAgMjBtMCAuMDF2LS4wMSIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==')]" />
 
-      {/* Content */}
-      <div className="relative h-full flex items-center">
+      {/* Content - positioned at bottom */}
+      <div className="relative h-full flex items-end pb-24 md:pb-32">
         <div className="luxury-container w-full">
           <div className="max-w-3xl">
             {/* Category tag */}
@@ -252,7 +252,7 @@ export default function HeroCarousel({
       )}
 
       {/* Slide indicators - minimal dots only */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2">
+      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
         {products.slice(0, Math.min(totalSlides, 10)).map((_, index) => (
           <button
             key={index}
