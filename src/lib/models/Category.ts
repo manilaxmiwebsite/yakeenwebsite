@@ -9,6 +9,7 @@ export interface ICategoryDocument extends Document {
   parentId: string | null;
   isActive: boolean;
   order: number;
+  slideshowAuto: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -23,6 +24,7 @@ const CategorySchema = new Schema<ICategoryDocument>(
     parentId: { type: Schema.Types.ObjectId, ref: 'Category', default: null },
     isActive: { type: Boolean, default: true },
     order: { type: Number, default: 0 },
+    slideshowAuto: { type: Boolean, default: true },
   },
   { timestamps: true }
 );

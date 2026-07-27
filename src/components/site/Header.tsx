@@ -60,17 +60,17 @@ export default function Header({
         <div className="luxury-container">
           <div className="flex items-center justify-between h-20 md:h-24">
             {/* Logo */}
-            <Link href="/" prefetch={true} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="flex items-center gap-3 group">
+            <Link href="/" prefetch={true} onClick={() => window.scrollTo({ top: 0, behavior: 'instant' })} className="flex items-center gap-2 group">
               {logo ? (
-                <img src={logo} alt={brandName} className="h-10 md:h-14 w-auto" />
+                <img src={logo} alt={brandName} className="h-12 md:h-16 w-auto" />
               ) : (
                 <span className="text-luxury-silver text-2xl md:text-3xl font-display font-bold">M</span>
               )}
-              <div className="block truncate max-w-[140px] sm:max-w-none">
-                <span className="font-display text-sm sm:text-lg md:text-xl text-luxury-white tracking-[0.05em] truncate block">
+              <div className="block">
+                <span className="font-display text-sm sm:text-lg md:text-xl text-luxury-white tracking-[0.05em] truncate block max-w-[160px] sm:max-w-[240px] md:max-w-none">
                   {brandName}
                 </span>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-luxury-silver/40 font-body -mt-0.5 truncate">
+                <div className="text-[10px] tracking-[0.2em] uppercase text-luxury-silver/40 font-body -mt-0.5 truncate max-w-[160px] sm:max-w-[240px] md:max-w-none">
                   {tagline}
                 </div>
               </div>

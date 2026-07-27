@@ -20,6 +20,7 @@ export default function AdminCategoriesPage() {
     parentId: '',
     isActive: true,
     order: 0,
+    slideshowAuto: true,
   });
 
   const fetchData = useCallback(async () => {
@@ -44,7 +45,7 @@ export default function AdminCategoriesPage() {
     categories.filter(c => c.parentId === parentId);
 
   const resetForm = () => {
-    setForm({ name: '', description: '', image: '', images: [''], parentId: '', isActive: true, order: 0 });
+    setForm({ name: '', description: '', image: '', images: [''], parentId: '', isActive: true, order: 0, slideshowAuto: true });
     setEditingId(null);
     setShowForm(false);
   };
@@ -64,6 +65,7 @@ export default function AdminCategoriesPage() {
       parentId,
       isActive: true,
       order: getSubCategories(parentId).length,
+      slideshowAuto: true,
     });
     setEditingId(null);
     setExpandedCategoryId(parentId);
@@ -79,6 +81,7 @@ export default function AdminCategoriesPage() {
       parentId: cat.parentId || '',
       isActive: cat.isActive,
       order: cat.order || 0,
+      slideshowAuto: cat.slideshowAuto !== false,
     });
     setEditingId(cat._id);
     // Auto-expand the parent when editing a subcategory
@@ -265,6 +268,20 @@ export default function AdminCategoriesPage() {
                     Active
                   </label>
                 </div>
+              </div>
+              <div>
+                <label className="flex items-center gap-3 text-sm text-luxury-white/60 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={form.slideshowAuto}
+                    onChange={(e) => setForm({ ...form, slideshowAuto: e.target.checked })}
+                    className="accent-luxury-silver"
+                  />
+                  <div>
+                    <span className="text-luxury-white/80 group-hover:text-luxury-silver transition-colors">Auto-populate slideshow from products</span>
+                    <p className="text-[10px] text-luxury-white/30 mt-0.5">When enabled, product images from this category (and subcategories) will be used in the homepage slideshow. Disable to use manually uploaded images instead.</p>
+                  </div>
+                </label>
               </div>
               <div className="flex gap-3 pt-4">
                 <button type="submit" className="px-6 py-3 bg-luxury-white text-luxury-black text-xs tracking-[0.15em] uppercase font-medium hover:bg-luxury-silver transition-all duration-300">

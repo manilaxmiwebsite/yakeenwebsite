@@ -32,6 +32,16 @@ export default async function HomePage() {
     getSiteSettings(),
   ]);
 
+  // Build a map of parent category -> subcategory IDs
+  const subCategoryMap: Record<string, string[]> = {};
+  for (const cat of categories) {
+    if (cat.parentId) {
+      const parentId = cat.parentId.toString();
+      if (!subCategoryMap[parentId]) subCategoryMap[parentId] = [];
+      subCategoryMap[parentId].push(cat._id.toString());
+    }
+  }
+
   // Group product images by category for the carousel
   const productImagesByCategory: Record<string, string[]> = {};
   for (const p of allProducts) {
@@ -41,6 +51,37 @@ export default async function HomePage() {
     if (p.images?.length) {
       productImagesByCategory[catId].push(...p.images.filter(Boolean));
     }
+  }
+
+  // Build final images for each category, including subcategory products
+  function getCategoryImages(cat: any): string[] {
+    const catId = (cat._id as string).toString();
+    const slideshowAuto = (cat as any).slideshowAuto !== false;
+    const manualImages = (cat as any).images?.filter(Boolean) || [];
+
+    if (!slideshowAuto && manualImages.length > 0) {
+      // Manual override: use uploaded images
+      return manualImages;
+    }
+
+    // Auto-populate: collect images from products in this category AND subcategories
+    const subIds = subCategoryMap[catId] || [];
+    const allCatIds = [catId, ...subIds];
+    const productImgs: string[] = [];
+    for (const cId of allCatIds) {
+      const imgs = productImagesByCategory[cId];
+      if (imgs?.length) {
+        productImgs.push(...imgs);
+      }
+    }
+
+    // If we have product images, use them (deduplicated, capped at 10)
+    if (productImgs.length > 0) {
+      return [...new Set(productImgs)].slice(0, 10);
+    }
+
+    // Fallback to manual images if no product images found
+    return manualImages.slice(0, 6);
   }
 
   const heroProducts = products.map((p) => ({
@@ -82,10 +123,11 @@ export default async function HomePage() {
     slug: c.slug,
     description: c.description || '',
     image: c.image || '',
-    images: (c as any).images?.length ? (c as any).images : [...new Set(productImagesByCategory[cId] || [])].slice(0, 6),
+    images: getCategoryImages(c),
     parentId: (c as any).parentId?.toString() || null,
     isActive: c.isActive,
     order: c.order,
+    slideshowAuto: (c as any).slideshowAuto !== false,
     createdAt: c.createdAt?.toISOString() || '',
     updatedAt: c.updatedAt?.toISOString() || '',
   };});

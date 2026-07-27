@@ -24,6 +24,7 @@ export interface ICategory {
   parentId: string | null;
   isActive: boolean;
   order: number;
+  slideshowAuto: boolean;
   createdAt: string;
   updatedAt: string;
 }
