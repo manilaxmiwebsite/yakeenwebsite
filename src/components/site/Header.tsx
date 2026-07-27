@@ -85,7 +85,7 @@ export default function Header({
                 <span className="font-display text-sm sm:text-lg md:text-xl text-luxury-white tracking-[0.05em] block leading-tight truncate">
                   {brandName}
                 </span>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-luxury-silver/40 font-body leading-tight whitespace-normal">
+                <div className="text-[10px] uppercase text-luxury-silver/40 font-body leading-tight whitespace-normal tracking-normal">
                   {tagline}
                 </div>
               </div>
